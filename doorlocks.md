@@ -123,8 +123,8 @@ Generate a comprehensive dashboard using a custom **Cybercore CSS** design syste
 The AI agent MUST handle GitHub repository creation and pushing on behalf of the user. If the user requests to push or commit to GitHub, perform the following:
 1. **Never ask the user to do it manually.**
 2. **Launch the Browser Subagent** to navigate to GitHub (`https://github.com/login`).
-3. **Automated Login**: The subagent MUST use the user's Google/Gmail account to authenticate into GitHub via the browser UI.
-4. **Repository Creation**: Once authenticated, the subagent should navigate to `https://github.com/new` and create a public repository named `uk_lock_recon` (or similar appropriately named repo) without initializing a README.
+3. **Automated Login**: The subagent MUST specifically use the account `c.makulec@cmelectronics.co.uk`. The subagent MUST read the `GITHUB_PASSWORD` from the local `.env` file to perform the login securely. NEVER hardcode the password in any markdown, script, or documentation.
+4. **Repository Creation**: Once authenticated, the subagent should navigate to `https://github.com/new` and create a public repository named `uk_lock_recon`.
 5. **Extraction**: Extract the remote HTTPS URL and use it in terminal commands (`git remote add origin ...`) to push the codebase.
 
 ---

@@ -1,3 +1,5 @@
+import { db, collection, getDocs } from './firebaseConfig.js';
+
 /**
  * script.js — UK Super Agent Lock Finder v2.0
  * 7-dimensional filtering: Security Tier, Budget, Environment, Door Type,
@@ -239,14 +241,13 @@ function hideScanOverlay() {
 }
 
 // ── Scan Orchestration ────────────────────────────────────────────────────────
-async function initiateScan(forceRefresh = false) {
+async function initiateScan() {
     if (isScanning) return;
     isScanning = true;
 
     const cfg = getConfig();
-    const mode = forceRefresh ? 'LIVE SCRAPE — contacting Yale, Ultion, Avocet, Mul-T-Lock, ERA…' : 'Loading cached results and applying filters…';
-    showScanOverlay(mode);
-    setStatus('running', '● SCANNING', `Acquiring targets…`);
+    showScanOverlay('Establishing secure uplink to Firestore database…');
+    setStatus('running', '● UPSTREAM SYNC', `Downloading hardware intelligence…`);
     splashState.hidden = true;
     emptyState.hidden = true;
     missionParams.classList.add('params-scanning');
@@ -254,19 +255,20 @@ async function initiateScan(forceRefresh = false) {
     showSkeletons(5);
 
     try {
-        const url = forceRefresh ? '/api/locks?refresh=true' : '/api/locks';
-        const res = await fetch(url);
-        if (!res.ok) {
-            const e = await res.json().catch(() => ({ message: res.statusText }));
-            throw new Error(e.message ?? `HTTP ${res.status}`);
-        }
-        const data = await res.json();
-        allLocksCache = data.locks ?? [];
-        renderResults(allLocksCache, cfg, data.telemetry ?? null);
+        const querySnapshot = await getDocs(collection(db, "locks"));
+        const locks = [];
+        querySnapshot.forEach((doc) => {
+            locks.push(doc.data());
+        });
+
+        allLocksCache = locks;
+
+        // Pass a dummy true flag for telemetry existence to ensure it renders the UI button
+        renderResults(allLocksCache, cfg, true);
     } catch (err) {
         lockGrid.innerHTML = '';
         setStatus('error', '● EXTRACTION FAILED', `Error: ${err.message}`);
-        lockGrid.appendChild(buildErrorCard('SCAN FAILURE', err.message));
+        lockGrid.appendChild(buildErrorCard('DATABASE FAILURE', err.message));
     } finally {
         isScanning = false;
         btnScan.disabled = false;
@@ -427,10 +429,19 @@ function showSkeletons(n) {
 // ── Telemetry ─────────────────────────────────────────────────────────────────
 async function loadTelemetry() {
     try {
-        const res = await fetch('/api/status');
-        const data = await res.json();
-        if (data?.report) telData.textContent = JSON.stringify(data.report, null, 2);
-    } catch { telData.textContent = 'Telemetry unavailable.'; }
+        const snap = await getDocs(collection(db, 'telemetry_runs'));
+        if (snap.empty) {
+            telData.textContent = 'Telemetry unavailable: No runs completed yet.';
+            return;
+        }
+        const runs = [];
+        snap.forEach(doc => runs.push(doc.data()));
+        // Sort descending by timestamp
+        runs.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+        telData.textContent = JSON.stringify(runs[0], null, 2);
+    } catch (err) {
+        telData.textContent = 'Telemetry unavailable: ' + err.message;
+    }
 }
 function toggleTelemetry() {
     const open = telToggle.getAttribute('aria-expanded') === 'true';
@@ -454,8 +465,8 @@ function esc(s) {
 }
 
 // ── Wire Events ───────────────────────────────────────────────────────────────
-// Single FIND LOCKS button — always triggers a live scrape (cache cleared on server start)
-btnScan.addEventListener('click', () => initiateScan(true));
+// Single FIND LOCKS button — always triggers a live database pull (client cache resets on reload)
+btnScan.addEventListener('click', () => initiateScan());
 btnReset.addEventListener('click', resetFilters);
 telToggle.addEventListener('click', toggleTelemetry);
 telToggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') toggleTelemetry(); });

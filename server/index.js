@@ -1,36 +1,14 @@
 import 'dotenv/config';
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import targets from './targets.js';
 import { scrapeTarget } from './selfHeal.js';
 import * as telemetry from './telemetry.js';
 import { KNOWN_PRODUCTS } from './knownProducts.js';
+import { db } from './firebaseAdmin.js'; // Firebase Cloud connection
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const app = express();
-const PORT = process.env.PORT ?? 3000;
-
-// Serve static files from /public
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
-// In-memory cache to avoid re-scraping on every browser refresh
-let cachedResults = null;
-let cacheTime = null;
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
-
-/**
- * Build a full lock object from a KNOWN_PRODUCTS entry.
- * Used as guaranteed fallback when live scraping returns 0 results.
- */
 function knownProductToLock(entry, index) {
     const kw = entry.keywords ?? [];
-    // Capitalise first keyword as manufacturer, rest as model hints
-    const manufacturer = kw[0]
-        ? kw[0].charAt(0).toUpperCase() + kw[0].slice(1)
-        : 'Unknown';
-    const model = kw.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-        || `${manufacturer} High-Security Cylinder`;
+    const manufacturer = kw[0] ? kw[0].charAt(0).toUpperCase() + kw[0].slice(1) : 'Unknown';
+    const model = kw.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || `${manufacturer} High-Security Cylinder`;
 
     return {
         manufacturer,
@@ -58,102 +36,80 @@ function deriveAccreditations(tier) {
     return ['BS3621'];
 }
 
-/**
- * GET /api/locks — Run full parallel scrape and return all lock results.
- * Results cached for 10 minutes. Falls back to KNOWN_PRODUCTS if scraping returns 0.
- */
-app.get('/api/locks', async (req, res) => {
-    const forceRefresh = req.query.refresh === 'true';
+// Generate a valid Firestore document ID
+function generateDocId(lock) {
+    const raw = `${lock.manufacturer}-${lock.model_name}`;
+    return raw.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+}
 
-    // Return cached data if fresh
-    if (cachedResults && !forceRefresh && (Date.now() - cacheTime < CACHE_TTL_MS)) {
-        console.log('[API] Returning cached results');
-        return res.json({ status: 'ok', cached: true, locks: cachedResults });
+async function runNightlyScrape() {
+    console.log('\n┌─────────────────────────────────────────────┐');
+    console.log('│  UK LOCK-SPEC RECONNAISSANCE                │');
+    console.log('│  Nightly Background Worker Starting...      │');
+    console.log('└─────────────────────────────────────────────┘\n');
+
+    if (!db) {
+        console.error('[Worker] Fatal Error: Firebase database is not initialized. Cannot store results!');
+        process.exit(1);
     }
 
-    console.log('[API] Starting fresh scrape run...');
     telemetry.startRun();
+    let finalLocks = [];
 
     try {
-        // Scrape all manufacturer targets IN PARALLEL
         const results = await Promise.allSettled(
             targets.map(target => scrapeTarget(target))
         );
 
-        // Flatten all successfully extracted locks
         const allLocks = results.flatMap((result, i) => {
             if (result.status === 'fulfilled') {
                 return result.value;
             } else {
-                console.error(`[API] Target ${targets[i].name} promise rejected: ${result.reason}`);
+                console.error(`[Worker] Target ${targets[i].name} promise rejected: ${result.reason}`);
                 return [];
             }
         });
 
         const report = telemetry.endRun();
 
-        // ── FALLBACK: if scraping returned 0 locks, use KNOWN_PRODUCTS as offline database
-        let finalLocks = allLocks;
-        let usedFallback = false;
         if (allLocks.length === 0) {
-            console.warn('[API] ⚠ Live scrape returned 0 locks — falling back to offline database');
+            console.warn('[Worker] ⚠ Live scrape returned 0 locks — falling back to offline database');
             finalLocks = KNOWN_PRODUCTS.map(knownProductToLock);
-            usedFallback = true;
+        } else {
+            finalLocks = allLocks;
         }
 
-        cachedResults = finalLocks;
-        cacheTime = Date.now();
+        console.log(`[Worker] Scrape finished. Found ${finalLocks.length} locks. Writing to Firestore...`);
 
-        return res.json({
-            status: 'ok',
-            cached: false,
-            fallback: usedFallback,
-            locks: finalLocks,
-            telemetry: {
-                durationMs: report.durationMs,
-                totalTokens: report.totalTokens,
-                totalLocksExtracted: report.totalLocksExtracted,
-                successTargets: report.successTargets,
-                overallStatus: usedFallback ? 'offline_database' : report.overallStatus,
-            },
+        // Use a Firestore Batch write to upload all records and telemetry simultaneously
+        const batch = db.batch();
+        const locksRef = db.collection('locks');
+
+        for (const lock of finalLocks) {
+            const docId = generateDocId(lock);
+            const docRef = locksRef.doc(docId);
+            batch.set(docRef, lock);
+        }
+
+        // Add a telemetry run record
+        const runRef = db.collection('telemetry_runs').doc(`run_${Date.now()}`);
+        batch.set(runRef, {
+            timestamp: new Date().toISOString(),
+            locksExtracted: finalLocks.length,
+            ...report
         });
+
+        await batch.commit();
+        console.log('[Worker] ✨ Firebase Firestore successfully updated with fresh locks.');
+
     } catch (err) {
-        console.error('[API] Fatal error during scrape:', err);
-        return res.status(500).json({ status: 'error', message: err.message });
+        console.error('[Worker] Fatal error during scrape cycle:', err);
+        process.exit(1);
     }
-});
 
-/**
- * GET /api/status — Return the last run telemetry report.
- */
-app.get('/api/status', (req, res) => {
-    const report = telemetry.getLastReport();
-    if (!report) {
-        return res.json({ status: 'no_run', message: 'No scrape has been run yet. Call /api/locks first.' });
-    }
-    return res.json({ status: 'ok', report });
-});
+    console.log('\n[Worker] 🏁 Nightly scrape cycle complete. Exiting gracefully.');
+    process.exit(0);
+}
 
-/**
- * GET /api/cache/clear — Flush the in-memory cache to force a fresh scrape on next /api/locks call.
- */
-app.get('/api/cache/clear', (req, res) => {
-    cachedResults = null;
-    cacheTime = null;
-    console.log('[API] Cache cleared manually');
-    return res.json({ status: 'ok', message: 'Cache cleared. Next /api/locks call will trigger a fresh scrape.' });
-});
-
-app.listen(PORT, () => {
-    // Always start with a clean slate — cache is flushed on every server start.
-    cachedResults = null;
-    cacheTime = null;
-    console.log(`\n┌─────────────────────────────────────────────┐`);
-    console.log(`│  UK LOCK-SPEC RECONNAISSANCE — ONLINE       │`);
-    console.log(`│  Dashboard: http://localhost:${PORT}            │`);
-    console.log(`│  API:       http://localhost:${PORT}/api/locks  │`);
-    console.log(`│  Cache: FLUSHED — all scans will be live    │`);
-    console.log(`└─────────────────────────────────────────────┘\n`);
-});
-
-export default app;
+// Execute the worker when the file is run directly by GitHub Actions (or manually via node)
+runNightlyScrape();

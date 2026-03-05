@@ -1,0 +1,38 @@
+name: Nightly Hardware Reconnaissance
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Run at 02:00 UTC every day
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  scrape-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Generate Firebase Service Account Key
+        run: |
+          mkdir -p server
+          echo "$FIREBASE_SERVICE_ACCOUNT" > server/service-account.json
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Execute Autonomous Scraper Engine
+        run: node server/index.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TRUSTPILOT_API_KEY: ${{ secrets.TRUSTPILOT_API_KEY }}
+          # The scraper reads 'server/service-account.json' automatically natively.

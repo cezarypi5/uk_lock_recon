@@ -119,13 +119,31 @@ Generate a comprehensive dashboard using a custom **Cybercore CSS** design syste
 
 ## 6. DEPLOYMENT & VERSION CONTROL RULES
 
-### 6.1 GitHub Authentication (MANDATORY)
+### 6.1 Versioning Rules (MANDATORY DUAL VERSION BUMP)
+Every functional code change made to this application MUST be accompanied by an automatic and robust version bump, strict mirroring the 'Palmistry AI' standards. 
+Before committing any changes, the AI MUST execute a "Dual Version Bump" covering all of the following locations:
+1. **`version.txt`**: Increment the raw version number (e.g., `1.5.21` → `1.5.22`).
+    *   *Patch (+0.0.1)*: Bug fixes, UI tweaks.
+    *   *Minor (+0.1.0)*: New features or architecture changes.
+    *   *Major (+1.0.0)*: Breaking changes.
+2. **`index.html` (Meta Tag)**: Update `<meta name="version" content="1.5.22">`.
+3. **`index.html` (Asset Cache Busting)**: Update all `?v=` parameters on `<link>` and `<script>` tags to match the new version (e.g., `styles.css?v=1.5.22`, `script.js?v=1.5.22`). This ensures cache busts upon deployment.
+
+### 6.2 GitHub Authentication & Code Pushing (MANDATORY)
 The AI agent MUST handle GitHub repository creation and pushing on behalf of the user. If the user requests to push or commit to GitHub, perform the following:
 1. **Never ask the user to do it manually.**
 2. **Launch the Browser Subagent** to navigate to GitHub (`https://github.com/login`).
 3. **Automated Login**: The subagent MUST specifically use the account `c.makulec@cmelectronics.co.uk`. The subagent MUST read the `GITHUB_PASSWORD` from the local `.env` file to perform the login securely. NEVER hardcode the password in any markdown, script, or documentation.
 4. **Repository Creation**: Once authenticated, the subagent should navigate to `https://github.com/new` and create a public repository named `uk_lock_recon`.
 5. **Extraction**: Extract the remote HTTPS URL and use it in terminal commands (`git remote add origin ...`) to push the codebase.
+6. **Verification**: After pushing, the agent MUST verify that the git push was 100% successful and zero files are un-tracked.
+
+### 6.3 CI/CD Autopilot & Firebase Deployment
+The entire deployment process MUST operate on full autopilot:
+1. **Automated Deployment**: Every successful code push to the `main` GitHub branch MUST automatically trigger a deployment of the front-end dashboard to **Firebase Hosting** using GitHub Actions (`firebase-deploy.yml`).
+2. **Post-Push Monitoring**: Immediately after pushing code to GitHub, the AI agent MUST NOT assume success. The agent MUST actively monitor the GitHub Actions workflow (via CLI logs or GitHub Dashboard) until the Firebase Deployment action returns a ✅ Success status.
+3. **Verification & Proof**: The agent must assert that the live URL deployed to Firebase exactly matches the newly bumped version in `version.txt`.
+4. **Test Report**: Upon successful deployment, the agent MUST generate a `walkthrough.md` test report detailing the changes, the new version number, and providing screenshot evidence of the live deployed UI changes using the `file:///` protocol.
 
 ---
 

@@ -117,7 +117,19 @@ Generate a comprehensive dashboard using a custom **Cybercore CSS** design syste
 
 ---
 
-## 6. LIVE ENVIRONMENT TESTING & SELF-HEALING PROTOCOL
+## 6. DEPLOYMENT & VERSION CONTROL RULES
+
+### 6.1 GitHub Authentication (MANDATORY)
+The AI agent MUST handle GitHub repository creation and pushing on behalf of the user. If the user requests to push or commit to GitHub, perform the following:
+1. **Never ask the user to do it manually.**
+2. **Launch the Browser Subagent** to navigate to GitHub (`https://github.com/login`).
+3. **Automated Login**: The subagent MUST use the user's Google/Gmail account to authenticate into GitHub via the browser UI.
+4. **Repository Creation**: Once authenticated, the subagent should navigate to `https://github.com/new` and create a public repository named `uk_lock_recon` (or similar appropriately named repo) without initializing a README.
+5. **Extraction**: Extract the remote HTTPS URL and use it in terminal commands (`git remote add origin ...`) to push the codebase.
+
+---
+
+## 7. LIVE ENVIRONMENT TESTING & SELF-HEALING PROTOCOL
 
 ### 6.1 Definition of Self-Healing
 The self-healing protocol is defined as **intelligent adaptive retry logic** — not runtime code rewriting. On any extraction failure, the orchestrator analyses the failure mode and adjusts its approach before retrying.

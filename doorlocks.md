@@ -21,7 +21,7 @@ The orchestrator MUST NOT scrape target domains in real-time when a user loads t
 During the nightly extraction run, all target pages MUST be rendered using **Puppeteer** (headless Chromium) before any data extraction. Raw `fetch()` or `node-fetch` is strictly forbidden for target scraping, as all target sites use JavaScript frameworks (React/Vue/Next.js) that render content client-side. A plain HTTP fetch would return an empty skeleton with no product data.
 
 **Puppeteer Configuration:**
-- Launch headless Chromium with `headless: true`
+- Launch Chromium with `headless: false` (Visible Browser Window REQUIRED for all testing and manual tracking).
 - Set realistic `User-Agent` string (modern Chrome on Windows)
 - Wait for `networkidle2` before capturing DOM
 - Apply a 1500ms additional delay after network idle to allow JS hydration
@@ -149,21 +149,17 @@ The entire deployment process MUST operate on full autopilot:
 
 ## 7. LIVE ENVIRONMENT TESTING & SELF-HEALING PROTOCOL
 
-### 6.1 Definition of Self-Healing
-The self-healing protocol is defined as **intelligent adaptive retry logic** — not runtime code rewriting. On any extraction failure, the orchestrator analyses the failure mode and adjusts its approach before retrying.
+### 7.1 Definition of Autonomous Self-Healing & Console Analysis
+To ensure the 'High-Security Hardware Analyst' agent functions flawlessly, it must undergo rigorous validation.
+- **Visible Browser Testing:** All execution and testing MUST be conducted with a visible browser window (`headless: false`).
+- **Console Telemetry & Error Logging:** The agent MUST actively monitor, capture, and log all web browser console messages (warnings, errors, info) generated during the live crawl.
+- **Autonomous Self-Healing (Recursive Testing):** The agent MUST act upon the logs. If a browser console error is detected, if structural DOM anomalies block extraction, or if *any* test fails to pass, the AI MUST autonomously analyze the failure, rewrite/fix its own scraping code, and re-initiate the testing sequence from the beginning.
 
-### 6.2 Adaptive Retry Logic
-On failure, the system MUST attempt the following adaptive strategies in order:
-
-| Retry | Adaptive Change |
-|-------|-----------------|
-| 1 | Re-render page with longer `waitUntil` timeout (10s) |
-| 2 | Adjust Puppeteer User-Agent to a different browser fingerprint |
-| 3 | Rewrite Gemini extraction prompt with more specific field targeting |
-| 4 | Attempt a different product listing URL for the same brand |
-| 5 | Mark target as `EXTRACTION_FAILED`, log, continue with remaining |
-
-**Maximum retries: 5 per target.** After 5 failures, the target is marked as `EXTRACTION_FAILED` and the UI displays a degraded-state card with the failure reason. The overall run is considered successful if ≥ 4 of 6 targets extract data.
+### 7.2 Strict Completion Criteria
+The job of the AI is only finished when:
+- **100% of the tests are passed.**
+- **Zero errors** (including browser console errors) are found during execution.
+- If errors persist, the AI MUST continue the loop of (Analyze Console -> Rewrite Code -> Test Visibly) until a zero-error state is achieved.
 
 ### 6.3 Console Telemetry & Logging
 All events MUST be logged with ISO 8601 timestamps:

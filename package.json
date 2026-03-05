@@ -1,0 +1,18 @@
+{
+    "name": "door-lock-recon",
+    "version": "1.0.0",
+    "description": "UK High-Security Lock Reconnaissance Dashboard",
+    "main": "server/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node server/index.js",
+        "test": "node test/extraction.test.js",
+        "test:full": "node test/extraction.test.js --refresh"
+    },
+    "dependencies": {
+        "@google/genai": "^0.7.0",
+        "dotenv": "^16.4.5",
+        "express": "^4.18.2",
+        "puppeteer-core": "^22.0.0"
+    }
+}

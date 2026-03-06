@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="version" content="1.0.3" />
+  <meta name="version" content="1.1.0" />
   <meta name="description"
     content="UK High-Security Door Lock Intelligence Dashboard — TS007 3-Star, SS312 Diamond, BS3621 compliant lock finder with advanced filtering." />
   <title>UK LOCK-SPEC RECON // TARGET ACQUISITION</title>
@@ -13,7 +13,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@700;900&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=1.0.3" />
+  <link rel="stylesheet" href="styles.css?v=1.1.0" />
 </head>
 
 <body>
@@ -59,6 +59,14 @@
       <h1 class="site-title glitch-text" data-text="UK RESIDENTIAL HARDENING">UK RESIDENTIAL HARDENING</h1>
       <p class="site-subtitle">// SUPER AGENT LOCK FINDER — LIVE INTELLIGENCE SYSTEM</p>
       <div class="header-controls">
+        <div class="sort-control">
+          <label for="sort-select" class="sort-label">SORT:</label>
+          <select id="sort-select" class="sort-select">
+            <option value="threat-desc">Threat Level (Highest First)</option>
+            <option value="price-asc">Price (Low to High)</option>
+            <option value="price-desc">Price (High to Low)</option>
+          </select>
+        </div>
         <button id="btn-scan" class="btn-primary" aria-label="Find matching locks">
           <span class="btn-icon">⬡</span> FIND LOCKS
         </button>
@@ -381,8 +389,12 @@
     </div>
     <div class="lock-grid" id="lock-grid" aria-live="polite"></div>
     <div class="empty-state" id="empty-state" hidden>
-      <p class="glitch-text-red" data-text="NO MATCHING TARGETS">NO MATCHING TARGETS</p>
-      <p id="empty-detail">No locks match your specification. Try relaxing some filters.</p>
+      <div class="glitch-wrapper">
+        <div class="glitch-text-red" data-text="NO TARGETS ACQUIRED">NO TARGETS ACQUIRED</div>
+      </div>
+      <p id="empty-detail" class="empty-desc">The specified mission parameters yielded 0 results.</p>
+      <button class="btn-ghost reset-empty-btn" onclick="document.getElementById('btn-reset').click()">[ RELAX FILTERS
+        ]</button>
     </div>
   </main>
 
@@ -397,15 +409,67 @@
     </div>
   </section>
 
+  <!-- Target Detail Modal (Wow Factor) -->
+  <div class="target-modal-overlay" id="target-modal" hidden aria-hidden="true">
+    <div class="target-modal-container">
+      <button class="modal-close" id="modal-close" aria-label="Close modal">✕</button>
+
+      <div class="modal-decrypting" id="modal-decrypting">
+        <div class="decrypt-spinner"></div>
+        <div class="decrypt-text glitch-text" data-text="DECRYPTING ASSET...">DECRYPTING ASSET...</div>
+      </div>
+
+      <div class="modal-content" id="modal-content" hidden>
+        <div class="modal-header">
+          <div class="modal-brand" id="modal-brand">BRISANT</div>
+          <h2 class="modal-title" id="modal-title">Ultion Wxm</h2>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-image-col">
+            <div class="modal-image-wrapper">
+              <img id="modal-image" src="" alt="Lock image" />
+              <div class="modal-image-scanline"></div>
+            </div>
+            <div class="modal-price" id="modal-price">£63.00</div>
+          </div>
+
+          <div class="modal-info-col">
+            <h3 class="modal-section-title">SECURITY CLEARANCE</h3>
+            <div class="modal-badges" id="modal-certs">
+              <!-- Certs injected here -->
+            </div>
+
+            <h3 class="modal-section-title">ATTACK VECTOR RESISTANCE</h3>
+            <ul class="modal-vectors">
+              <li class="vector-item"><span class="vector-icon">✂</span> Anti-Snap <span
+                  class="vector-status">VERIFIED</span></li>
+              <li class="vector-item"><span class="vector-icon">🔨</span> Anti-Bump <span
+                  class="vector-status">VERIFIED</span></li>
+              <li class="vector-item"><span class="vector-icon">🔧</span> Anti-Drill <span
+                  class="vector-status">VERIFIED</span></li>
+              <li class="vector-item"><span class="vector-icon">🗝</span> Anti-Pick <span
+                  class="vector-status">VERIFIED</span></li>
+            </ul>
+
+            <a href="#" target="_blank" class="btn-primary modal-action-btn" id="modal-action-btn">
+              EXECUTE PURCHASE ⬈
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-left">
       <span class="footer-label">SECURED BY DESIGN</span>
       <span class="footer-count" id="footer-compliant-count">— AWAITING DATA —</span>
     </div>
-    <div class="footer-right">UK SUPER AGENT LOCK FINDER v2.0 // CYBERCORE</div>
+    <div class="footer-right">UK SUPER AGENT LOCK FINDER v1.1.0 // CYBERCORE</div>
   </footer>
-  <script type="module" src="script.js?v=1.0.3"></script>
+  <script type="module" src="script.js?v=1.1.0"></script>
 </body>
 
 </html>

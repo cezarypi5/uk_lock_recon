@@ -32,6 +32,17 @@ const presetBtns = document.querySelectorAll('.preset-btn');
 const sizeRows = document.querySelectorAll('.size-row');
 const scanOverlay = document.getElementById('scan-overlay');
 const scanOverlayDetail = document.getElementById('scan-overlay-detail');
+const sortSelect = document.getElementById('sort-select');
+const targetModal = document.getElementById('target-modal');
+const modalClose = document.getElementById('modal-close');
+const modalDecrypting = document.getElementById('modal-decrypting');
+const modalContent = document.getElementById('modal-content');
+const modalBrand = document.getElementById('modal-brand');
+const modalTitle = document.getElementById('modal-title');
+const modalImage = document.getElementById('modal-image');
+const modalPrice = document.getElementById('modal-price');
+const modalCerts = document.getElementById('modal-certs');
+const modalActionBtn = document.getElementById('modal-action-btn');
 
 // ── State ───────────────────────────────────────────────────────────────────
 let isScanning = false;
@@ -284,14 +295,23 @@ function renderResults(allLocks, cfg, telem) {
     if (filtered.length === 0) {
         emptyState.hidden = false;
         const active = buildActiveFiltersLabel(cfg);
-        emptyDetail.textContent = active ? `No locks match: ${active}. Try relaxing some filters.` : 'No compliant locks found. Try refreshing.';
+        // The HTML template has a hardcoded generic message now, so we can override it if filters were active
+        if (active) emptyDetail.textContent = `The parameters [ ${active} ] yielded 0 results.`;
         setStatus('error', '● ZERO TARGETS', 'No locks match your specification — adjust parameters above.');
         statusCount.textContent = '';
         footerCount.textContent = '0 TARGETS';
     } else {
         emptyState.hidden = true;
-        // Sort by security tier descending
-        const sorted = [...filtered].sort((a, b) => (TIER_ORDER[deriveTier(b)] ?? 2) - (TIER_ORDER[deriveTier(a)] ?? 2));
+        const sortVal = sortSelect.value;
+        const sorted = [...filtered].sort((a, b) => {
+            if (sortVal === 'threat-desc') {
+                return (TIER_ORDER[deriveTier(b)] ?? 2) - (TIER_ORDER[deriveTier(a)] ?? 2);
+            } else {
+                const priceA = parseFloat((a.price_gbp || '').replace(/[£,]/g, '')) || Number.MAX_VALUE;
+                const priceB = parseFloat((b.price_gbp || '').replace(/[£,]/g, '')) || Number.MAX_VALUE;
+                return sortVal === 'price-asc' ? priceA - priceB : priceB - priceA;
+            }
+        });
         sorted.forEach(lock => lockGrid.appendChild(buildLockCard(lock)));
         const fromTotal = allLocks.length !== filtered.length ? ` (${allLocks.length - filtered.length} filtered out)` : '';
         setStatus('success', '● EXTRACTION COMPLETE', `${filtered.length} target(s) acquired${fromTotal} — ${telem ? `${telem.successTargets}/5 sources scanned` : 'from cache'}`);
@@ -335,6 +355,13 @@ function buildLockCard(lock) {
       ${buildReviewsHtml(lock.reviews)}
       <div class="card-footer">${buildLinkHtml(lock.product_url, lock.manufacturer)}</div>
     </div>`;
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+        // Prevent opening modal if they clicked the direct link at the bottom
+        if (!e.target.closest('.card-link')) {
+            openTargetModal(lock);
+        }
+    });
     return card;
 }
 
@@ -464,9 +491,74 @@ function esc(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+// ── Target Detail Modal Logic ─────────────────────────────────────────────────
+function openTargetModal(lock) {
+    targetModal.hidden = false;
+    modalDecrypting.hidden = false;
+    modalContent.hidden = true;
+
+    // Scan effect delay
+    setTimeout(() => {
+        modalDecrypting.hidden = true;
+        modalContent.hidden = false;
+
+        modalBrand.textContent = lock.manufacturer || '';
+        modalTitle.textContent = lock.model_name || 'UNKNOWN ASSET';
+        modalTitle.setAttribute('data-text', modalTitle.textContent);
+
+        if (!lock.lock_image || lock.lock_image === 'N/A') {
+            modalImage.parentElement.style.display = 'none';
+        } else {
+            modalImage.parentElement.style.display = 'flex';
+            modalImage.src = lock.lock_image;
+            modalImage.alt = lock.model_name;
+        }
+
+        modalPrice.textContent = lock.price_gbp === 'N/A' ? 'PRICE: N/A' : lock.price_gbp;
+        modalCerts.innerHTML = buildAccreditationTags(lock.security_accreditations) || '<span class="accreditation-tag">NO ACCREDITATIONS</span>';
+
+        const attackVectors = lock.anti_attack || [];
+        const vectorMap = [
+            { id: 'anti-snap', icon: '✂', label: 'Anti-Snap' },
+            { id: 'anti-bump', icon: '🔨', label: 'Anti-Bump' },
+            { id: 'anti-drill', icon: '🔧', label: 'Anti-Drill' },
+            { id: 'anti-pick', icon: '🗝', label: 'Anti-Pick' },
+            { id: 'anti-extract', icon: '🔒', label: 'Anti-Extract' }
+        ];
+
+        const vectorsEl = document.querySelector('.modal-vectors');
+        if (vectorsEl) {
+            vectorsEl.innerHTML = vectorMap.map(v => {
+                const hasIt = attackVectors.includes(v.id);
+                const statusStr = hasIt ? 'VERIFIED' : 'VULNERABLE';
+                const colorClass = hasIt ? 'var(--green)' : 'var(--red)';
+                const textClass = hasIt ? 'glitch-text' : '';
+                return `<li class="vector-item"><span class="vector-icon">${v.icon}</span> ${v.label} <span class="vector-status ${textClass}" data-text="${statusStr}" style="color:${colorClass}">${statusStr}</span></li>`;
+            }).join('');
+        }
+
+        if (!lock.product_url || lock.product_url === 'N/A') {
+            modalActionBtn.style.display = 'none';
+        } else {
+            modalActionBtn.style.display = 'inline-flex';
+            modalActionBtn.href = lock.product_url;
+        }
+    }, 800);
+}
+
+modalClose.addEventListener('click', () => { targetModal.hidden = true; });
+targetModal.addEventListener('click', (e) => {
+    if (e.target === targetModal || e.target.classList.contains('target-modal-container')) {
+        targetModal.hidden = true;
+    }
+});
+
 // ── Wire Events ───────────────────────────────────────────────────────────────
 // Single FIND LOCKS button — always triggers a live database pull (client cache resets on reload)
 btnScan.addEventListener('click', () => initiateScan());
 btnReset.addEventListener('click', resetFilters);
+sortSelect.addEventListener('change', () => {
+    if (allLocksCache.length > 0) renderResults(allLocksCache, getConfig(), null);
+});
 telToggle.addEventListener('click', toggleTelemetry);
 telToggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') toggleTelemetry(); });

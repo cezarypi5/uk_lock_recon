@@ -607,11 +607,16 @@ async function runLiveScrape(cfg) {
     const tsStart = performance.now();
 
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
         const response = await fetch('http://localhost:3001/api/scrape', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(cfg || {})
+            body: JSON.stringify(cfg || {}),
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
 
         if (!response.ok) throw new Error(`Scraper API returned ${response.status}`);
         const jsonResponse = await response.json();

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="version" content="1.1.0" />
+  <meta name="version" content="1.2.0" />
   <meta name="description"
     content="UK High-Security Door Lock Intelligence Dashboard — TS007 3-Star, SS312 Diamond, BS3621 compliant lock finder with advanced filtering." />
   <title>UK LOCK-SPEC RECON // TARGET ACQUISITION</title>
@@ -13,7 +13,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@700;900&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=1.1.0" />
+  <link rel="stylesheet" href="styles.css?v=1.2.0" />
 </head>
 
 <body>
@@ -57,7 +57,10 @@
     <div class="header-inner">
       <div class="header-badge">CLASSIFIED</div>
       <h1 class="site-title glitch-text" data-text="UK RESIDENTIAL HARDENING">UK RESIDENTIAL HARDENING</h1>
-      <p class="site-subtitle">// SUPER AGENT LOCK FINDER — LIVE INTELLIGENCE SYSTEM</p>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <p class="site-subtitle" style="margin-bottom: 0;">// SUPER AGENT LOCK FINDER — LIVE INTELLIGENCE SYSTEM</p>
+        <span id="db-sync-readout" class="db-sync-readout">// DB SYNC: CALCULATING...</span>
+      </div>
       <div class="header-controls">
         <div class="sort-control">
           <label for="sort-select" class="sort-label">SORT:</label>
@@ -72,7 +75,6 @@
         </button>
         <button id="btn-reset" class="btn-ghost" aria-label="Reset all filters">✕ RESET FILTERS</button>
       </div>
-    </div>
   </header>
 
   <!-- ═══════════════════════════════════════════════════════
@@ -467,9 +469,16 @@
       <span class="footer-label">SECURED BY DESIGN</span>
       <span class="footer-count" id="footer-compliant-count">— AWAITING DATA —</span>
     </div>
-    <div class="footer-right">UK SUPER AGENT LOCK FINDER v1.1.0 // CYBERCORE</div>
+    <span class="footer-version">UK SUPER AGENT LOCK FINDER v1.2.0 // CYBERCORE</span>
   </footer>
-  <script type="module" src="script.js?v=1.1.0"></script>
+
+  <!-- Firebase Integration -->
+  <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore-compat.js"></script>
+  <script src="firebaseConfig.js?v=1.2.0"></script>
+
+  <!-- Application Logic -->
+  <script type="module" src="script.js?v=1.2.0"></script>
 </body>
 
 </html>

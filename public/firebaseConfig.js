@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-import { getFirestore, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
 // The true configuration for 'Lock Recon'
 const firebaseConfig = {
@@ -20,4 +20,4 @@ try {
     console.error('[Firebase Config] Error initializing Web SDK:', error);
 }
 
-export { db, collection, getDocs, onSnapshot };
+export { db, collection, getDocs, onSnapshot, query, orderBy, limit };

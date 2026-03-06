@@ -101,14 +101,13 @@ async function runNightlyScrape() {
 
         await batch.commit();
         console.log('[Worker] ✨ Firebase Firestore successfully updated with fresh locks.');
+        console.log('\n[Worker] 🏁 Nightly scrape cycle complete. Exiting gracefully.');
+        process.exit(0);
 
     } catch (err) {
         console.error('[Worker] Fatal error during scrape cycle:', err);
         process.exit(1);
     }
-
-    console.log('\n[Worker] 🏁 Nightly scrape cycle complete. Exiting gracefully.');
-    process.exit(0);
 }
 
 // Execute the worker when the file is run directly by GitHub Actions (or manually via node)

@@ -219,6 +219,28 @@ body {
   box-shadow: 0 0 10px var(--cyan-dim);
 }
 
+.btn-action {
+  background: transparent;
+  color: #ff00ff;
+  /* Electric Magenta */
+  border: 1px solid rgba(255, 0, 255, 0.3);
+  margin-left: auto;
+  /* Push to the right edge */
+}
+
+.btn-action:hover:not(:disabled) {
+  background: rgba(255, 0, 255, 0.1);
+  border-color: #ff00ff;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+}
+
+.btn-action:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-dim);
+}
+
 /* ── Status Bar ── */
 .status-bar {
   display: flex;

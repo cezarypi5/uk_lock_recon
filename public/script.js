@@ -9,6 +9,7 @@ import { db, collection, getDocs, query, orderBy, limit } from './firebaseConfig
 // ── DOM References ──────────────────────────────────────────────────────────
 const btnScan = document.getElementById('btn-scan');
 const btnReset = document.getElementById('btn-reset');
+const btnExport = document.getElementById('btn-export');
 const lockGrid = document.getElementById('lock-grid');
 const splashState = document.getElementById('splash-state');
 const emptyState = document.getElementById('empty-state');
@@ -45,9 +46,10 @@ const modalCerts = document.getElementById('modal-certs');
 const modalActionBtn = document.getElementById('modal-action-btn');
 const dbSyncReadout = document.getElementById('db-sync-readout');
 
-// ── State ───────────────────────────────────────────────────────────────────
-let isScanning = false;
+// ── Global State ─────────────────────────────────────────────────────────────
 let allLocksCache = [];
+let currentRenderedData = [];
+let isScanning = false;
 
 // ── Security Tier: derived from accreditations + data field ─────────────────
 function deriveTier(lock) {
@@ -264,7 +266,10 @@ async function initiateScan() {
     emptyState.hidden = true;
     missionParams.classList.add('params-scanning');
     btnScan.disabled = true;
+    btnExport.disabled = true; // Disable export during scan
     showSkeletons(5);
+
+    const loadStart = performance.now(); // Define loadStart here
 
     try {
         const querySnapshot = await getDocs(collection(db, "locks"));
@@ -277,6 +282,11 @@ async function initiateScan() {
 
         // Pass a dummy true flag for telemetry existence to ensure it renders the UI button
         renderResults(allLocksCache, cfg, true);
+
+        // Track latency for tests
+        const loadEnd = performance.now();
+        console.log(`[LATENCY] Firestore DB Sync completed in ${(loadEnd - loadStart).toFixed(2)}ms`);
+
         showToast('Database Synchronized', 'success');
     } catch (err) {
         lockGrid.innerHTML = '';
@@ -293,9 +303,11 @@ async function initiateScan() {
 
 function renderResults(allLocks, cfg, telem) {
     const filtered = filterLocks(allLocks, cfg);
+
     lockGrid.innerHTML = '';
 
     if (filtered.length === 0) {
+        btnExport.disabled = true;
         emptyState.hidden = false;
         const active = buildActiveFiltersLabel(cfg);
         // The HTML template has a hardcoded generic message now, so we can override it if filters were active
@@ -303,6 +315,7 @@ function renderResults(allLocks, cfg, telem) {
         setStatus('error', '● ZERO TARGETS', 'No locks match your specification — adjust parameters above.');
         statusCount.textContent = '';
         footerCount.textContent = '0 TARGETS';
+        currentRenderedData = []; // Clear export data
     } else {
         emptyState.hidden = true;
         const sortVal = sortSelect.value;
@@ -315,11 +328,13 @@ function renderResults(allLocks, cfg, telem) {
                 return sortVal === 'price-asc' ? priceA - priceB : priceB - priceA;
             }
         });
+        currentRenderedData = sorted; // Cache current view for Export
         sorted.forEach(lock => lockGrid.appendChild(buildLockCard(lock)));
         const fromTotal = allLocks.length !== filtered.length ? ` (${allLocks.length - filtered.length} filtered out)` : '';
         setStatus('success', '● EXTRACTION COMPLETE', `${filtered.length} target(s) acquired${fromTotal} — ${telem ? `${telem.successTargets}/5 sources scanned` : 'from cache'}`);
         statusCount.textContent = `[${filtered.length} TARGETS]`;
         footerCount.textContent = `${filtered.length} COMPLIANT LOCK(S)`;
+        btnExport.disabled = false; // Enable export now that targets are rendered
     }
 
     if (telem) { telPanel.hidden = false; loadTelemetry(); }
@@ -574,13 +589,69 @@ targetModal.addEventListener('click', (e) => {
     }
 });
 
+// ── Live Scrape Logic (Local Testing) ───────────────────────────────────────
+async function runLiveScrape(cfg) {
+    if (isScanning) return;
+    isScanning = true;
+
+    showScanOverlay('Establishing real-time connection to UK manufacturer databases...');
+    setStatus('running', '● EXECUTING LIVE TARGET EXTRACTION', `Booting Scraper Engine...`);
+    splashState.hidden = true;
+    emptyState.hidden = true;
+    missionParams.classList.add('params-scanning');
+    btnScan.disabled = true;
+    if (btnExport) btnExport.disabled = true;
+    showSkeletons(6);
+
+    const tsStart = performance.now();
+
+    try {
+        const response = await fetch('http://localhost:3001/api/scrape', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cfg || {})
+        });
+
+        if (!response.ok) throw new Error(`Scraper API returned ${response.status}`);
+        const jsonResponse = await response.json();
+
+        allLocksCache = jsonResponse.locks || [];
+
+        const tsEnd = performance.now();
+        const durationSecs = ((tsEnd - tsStart) / 1000).toFixed(1);
+        console.log(`[LATENCY] Live Web Scrape completed in ${(tsEnd - tsStart).toFixed(2)}ms`);
+
+        const telemetry = {
+            durationSecs: durationSecs,
+            successTargets: allLocksCache.length
+        };
+
+        renderResults(allLocksCache, cfg, telemetry);
+        showToast('Live Extraction Complete', 'success');
+
+    } catch (err) {
+        lockGrid.innerHTML = '';
+        setStatus('error', '● EXTRACTION FAILED', `API Error: ${err.message}`);
+        lockGrid.appendChild(buildErrorCard('LIVE SCRAPE FAILURE', err.message));
+        showToast('Error: Scraper Disconnected', 'error');
+    } finally {
+        isScanning = false;
+        btnScan.disabled = false;
+        missionParams.classList.remove('params-scanning');
+        hideScanOverlay();
+    }
+}
+
 // ── Wire Events ───────────────────────────────────────────────────────────────
 // Single FIND LOCKS button — always triggers a live database pull (client cache resets on reload)
-btnScan.addEventListener('click', () => initiateScan());
+btnScan.addEventListener('click', () => isLiveMode ? runLiveScrape(getConfig()) : initiateScan());
 btnReset.addEventListener('click', () => {
     resetFilters();
     showToast('Filters Reset', 'info', 2000);
 });
+if (btnExport) {
+    btnExport.addEventListener('click', generateDossier);
+}
 sortSelect.addEventListener('change', () => {
     if (allLocksCache.length > 0) {
         renderResults(allLocksCache, getConfig(), null);
@@ -645,4 +716,49 @@ function showToast(message, type = 'info', duration = 3000) {
         toast.classList.add('removing');
         toast.addEventListener('animationend', () => toast.remove());
     }, duration);
+}
+
+// ── Target Dossier Export (CSV) ────────────────────────────────────────────────
+function generateDossier() {
+    if (currentRenderedData.length === 0) return;
+
+    // Build standard CSV headers
+    const headers = ['Manufacturer', 'Model', 'Security Tier', 'Accreditations', 'Price (GBP)', 'URL'];
+
+    // Map objects to CSV rows
+    const rows = currentRenderedData.map(lock => {
+        const mfg = `"${esc(lock.manufacturer || 'Unknown')}"`;
+        const model = `"${esc(lock.model || 'Unknown')}"`;
+        const tier = `"${esc(deriveTier(lock) || 'N/A')}"`;
+
+        // Combine certs safely
+        const certsArr = [];
+        if (lock.ts007_3star) certsArr.push('TS007 3-Star');
+        if (lock.ss312_diamond) certsArr.push('SS312 Diamond');
+        if (lock.bs3621) certsArr.push('BS3621');
+        const certs = `"${certsArr.join(', ')}"`;
+
+        const price = `"${esc(lock.price_gbp || 'N/A')}"`;
+        const url = `"${lock.url || ''}"`;
+
+        return [mfg, model, tier, certs, price, url].join(',');
+    });
+
+    // Construct raw blob
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Auto clicker
+    const link = document.createElement("a");
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    link.setAttribute("href", blobUrl);
+    link.setAttribute("download", `Target_Dossier_${timestamp}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Cleanup & feedback
+    URL.revokeObjectURL(blobUrl);
+    showToast('Dossier Compiled & Downloaded', 'success');
 }

@@ -1,7 +1,8 @@
 {
     "name": "door-locks-recon",
     "version": "1.5.0",
-    "description": "UK High-Security Door Lock Reconnaissance System",craper dashboard","main": "server/index.js",
+    "description": "UK High-Security Door Lock Reconnaissance System",
+    "main": "server/index.js",
     "type": "module",
     "scripts": {
         "start": "node server/api.js",

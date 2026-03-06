@@ -277,10 +277,12 @@ async function initiateScan() {
 
         // Pass a dummy true flag for telemetry existence to ensure it renders the UI button
         renderResults(allLocksCache, cfg, true);
+        showToast('Database Synchronized', 'success');
     } catch (err) {
         lockGrid.innerHTML = '';
         setStatus('error', '● EXTRACTION FAILED', `Error: ${err.message}`);
         lockGrid.appendChild(buildErrorCard('DATABASE FAILURE', err.message));
+        showToast('Error: Re-establishing Connection', 'error');
     } finally {
         isScanning = false;
         btnScan.disabled = false;
@@ -575,9 +577,15 @@ targetModal.addEventListener('click', (e) => {
 // ── Wire Events ───────────────────────────────────────────────────────────────
 // Single FIND LOCKS button — always triggers a live database pull (client cache resets on reload)
 btnScan.addEventListener('click', () => initiateScan());
-btnReset.addEventListener('click', resetFilters);
+btnReset.addEventListener('click', () => {
+    resetFilters();
+    showToast('Filters Reset', 'info', 2000);
+});
 sortSelect.addEventListener('change', () => {
-    if (allLocksCache.length > 0) renderResults(allLocksCache, getConfig(), null);
+    if (allLocksCache.length > 0) {
+        renderResults(allLocksCache, getConfig(), null);
+        showToast('Mission Parameters Applied', 'info', 2000);
+    }
 });
 telToggle.addEventListener('click', toggleTelemetry);
 telToggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') toggleTelemetry(); });
@@ -611,3 +619,30 @@ async function fetchLatestSync() {
 
 // Initialize sync time on page load
 if (dbSyncReadout) fetchLatestSync();
+
+// ── Toast Notifications ───────────────────────────────────────────────────────
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+
+    let icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    if (type === 'error') icon = '⚠️';
+
+    toast.innerHTML = `
+      <div class="toast-content">
+        <span class="toast-icon">${icon}</span>
+        <span>${esc(message)}</span>
+      </div>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('removing');
+        toast.addEventListener('animationend', () => toast.remove());
+    }, duration);
+}

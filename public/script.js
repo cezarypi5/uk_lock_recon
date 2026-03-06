@@ -577,8 +577,12 @@ function openTargetModal(lock) {
         if (!lock.product_url || lock.product_url === 'N/A') {
             modalActionBtn.style.display = 'none';
         } else {
+            let purchaseUrl = lock.product_url;
+            if (purchaseUrl && !purchaseUrl.startsWith('http://') && !purchaseUrl.startsWith('https://')) {
+                purchaseUrl = 'https://' + purchaseUrl;
+            }
             modalActionBtn.style.display = 'inline-flex';
-            modalActionBtn.href = lock.product_url;
+            modalActionBtn.href = purchaseUrl;
         }
     }, 800);
 }

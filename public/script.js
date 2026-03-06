@@ -48,6 +48,7 @@ const dbSyncReadout = document.getElementById('db-sync-readout');
 
 // ── Global State ─────────────────────────────────────────────────────────────
 let allLocksCache = [];
+const isLiveMode = new URLSearchParams(window.location.search).get('mode') === 'live';
 let currentRenderedData = [];
 let isScanning = false;
 

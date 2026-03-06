@@ -590,51 +590,6 @@ targetModal.addEventListener('click', (e) => {
     }
 });
 
-// ── Database Sync Logic (Firestore) ─────────────────────────────────────────
-async function initiateScan() {
-    if (isScanning) return;
-    isScanning = true;
-
-    const cfg = getConfig();
-    showScanOverlay('Establishing secure uplink to Firestore database...');
-    setStatus('running', '● UPSTREAM SYNC', `Downloading hardware intelligence...`);
-    splashState.hidden = true;
-    emptyState.hidden = true;
-    missionParams.classList.add('params-scanning');
-    btnScan.disabled = true;
-    if (btnExport) btnExport.disabled = true;
-    showSkeletons(5);
-
-    const tsStart = performance.now();
-
-    try {
-        const querySnapshot = await getDocs(collection(db, "locks"));
-        const locks = [];
-        querySnapshot.forEach((doc) => {
-            locks.push(doc.data());
-        });
-
-        allLocksCache = locks;
-
-        const tsEnd = performance.now();
-        console.log(`[LATENCY] Firestore DB Sync completed in ${(tsEnd - tsStart).toFixed(2)}ms`);
-
-        // Pass a dummy true flag for telemetry existence to ensure it renders the UI button
-        renderResults(allLocksCache, cfg, true);
-        showToast('Database Synchronized', 'success');
-    } catch (err) {
-        lockGrid.innerHTML = '';
-        setStatus('error', '● EXTRACTION FAILED', `Error: ${err.message}`);
-        lockGrid.appendChild(buildErrorCard('DATABASE FAILURE', err.message));
-        showToast('Error: Re-establishing Connection', 'error');
-    } finally {
-        isScanning = false;
-        btnScan.disabled = false;
-        missionParams.classList.remove('params-scanning');
-        hideScanOverlay();
-    }
-}
-
 // ── Live Scrape Logic (Local Testing) ───────────────────────────────────────
 async function runLiveScrape(cfg) {
     if (isScanning) return;

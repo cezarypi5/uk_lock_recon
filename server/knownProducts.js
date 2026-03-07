@@ -592,7 +592,7 @@ export const KNOWN_PRODUCTS = [
     // ══════════════════════════════════════════════════════════════════════════
     {
         keywords: ['evva', 'eps'],
-        product_url: 'https://www.evva.com/uk-en/',
+        product_url: 'https://www.evvakeys.co.uk/',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£120.00',
         cylinder_type: 'double euro',
@@ -611,7 +611,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['evva'],
-        product_url: 'https://www.evva.com/uk-en/',
+        product_url: 'https://www.evvakeys.co.uk/',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£120.00',
         cylinder_type: 'double euro',

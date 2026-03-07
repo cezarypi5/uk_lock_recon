@@ -594,14 +594,13 @@ Return valid JSON array only. No markdown fences.
         name: 'EVVA',
         brand: 'evva',
         trustpilotName: 'evva.com',
-        knownBlocked: true,
+        knownBlocked: true, // Cloudflare WAF issues 403, masking origin 503s
         urls: [
-            'https://www.evva.com/en-gb/products/',
-            'https://www.evva.com/en-gb/products/cylinders/',
             'https://www.safe.co.uk/evva-cylinders/',
             'https://jcphardware.co.uk/evva/',
             'https://www.lockshopdirect.co.uk/evva-cylinders/',
-            'https://www.evva.com/en-gb/',
+            'https://www.lockandkey.co.uk/evva-cylinders/',
+            'https://www.bennlockandsafe.co.uk/evva-cylinders/',
         ],
         geminiPrompt: `
 You are a data extraction assistant. Analyse the HTML below from EVVA or a UK stockist.

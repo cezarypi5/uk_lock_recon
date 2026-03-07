@@ -208,7 +208,9 @@ export async function fetchWithPuppeteer(url, options = {}) {
                 textL.includes('error') || textL.includes('fail') ||
                 textL.includes('violat') || textL.includes('block') ||
                 textL.includes('404') || textL.includes('not found') ||
-                textL.includes('timeout') || textL.includes('token challenge')) {
+                textL.includes('timeout') || textL.includes('token challenge') ||
+                textL.includes('500') || textL.includes('502') || textL.includes('503') || textL.includes('504') ||
+                textL.includes('cloudflare') || textL.includes('waf') || textL.includes('forbidden')) {
                 return;
             }
 
@@ -245,7 +247,18 @@ export async function fetchWithPuppeteer(url, options = {}) {
             }
         });
 
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: timeoutMs });
+        const response = await page.goto(url, { waitUntil: 'networkidle2', timeout: timeoutMs });
+
+        // ── 5xx Permutations & WAF Defense Handling ──
+        if (response) {
+            const status = response.status();
+            if (status >= 500 && status <= 599) {
+                // Immediately abort on server-side errors (e.g. 503 Service Unavailable, Cloudflare WAF block)
+                // This forces the orchestrator to fail fast instead of parsing blank/blocked HTML.
+                throw new Error(`HTTP ${status} Server Error / WAF Block`);
+            }
+        }
+
         await new Promise((resolve) => setTimeout(resolve, extraDelayMs));
 
         const html = await page.content();

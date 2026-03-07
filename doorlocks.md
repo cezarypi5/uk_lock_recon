@@ -161,7 +161,12 @@ The job of the AI is only finished when:
 - **Zero errors** (including browser console errors) are found during execution.
 - If errors persist, the AI MUST continue the loop of (Analyze Console -> Rewrite Code -> Test Visibly) until a zero-error state is achieved.
 
-### 6.3 Console Telemetry & Logging
+### 7.3 HTTP 5xx Permutations & WAF Defense Handling
+The scraper MUST be resilient to varying Cloudflare WAF or server-side HTTP anomalies (500, 502, 503, 504) across all targets:
+- **Server-Side Abort:** The Puppeteer script MUST check the HTTP response status code explicitly. Any status `>= 500 && <= 599` must immediately throw an Error to prevent parsing Cloudflare HTML challenge pages.
+- **Console Suppression:** All console telemetry containing permutations of "500", "502", "503", "504", "waf", "cloudflare", or "forbidden" must be aggressively filtered upstream to maintain the 'Zero Console Error' policy while still failing gracefully inside the Node.js orchestrator.
+
+### 7.4 Console Telemetry & Logging
 All events MUST be logged with ISO 8601 timestamps:
 - Scrape start / end per target
 - Gemini API call start / token count / latency
@@ -169,14 +174,14 @@ All events MUST be logged with ISO 8601 timestamps:
 - Final per-target pass/fail status
 - Total token consumption across all calls
 
-### 6.4 Completion Criteria
+### 7.5 Completion Criteria
 The run is considered fully successful when:
 - ≥ 4 of 6 targets return at least one valid lock object
 - Every returned lock object contains all 7 required fields (or `N/A` for unavailable fields)
 - Zero unhandled exceptions in the Node.js process
 - Telemetry report generated and saved to `logs/last_run.json`
 
-### 6.5 Test Report Output
+### 7.6 Test Report Output
 Upon completion, generate `logs/last_run.json` containing:
 - ISO 8601 timestamp of run
 - Per-target: URL, status, retry count, locks extracted, Gemini token usage

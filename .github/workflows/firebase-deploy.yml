@@ -29,5 +29,11 @@ jobs:
       - name: 'Install Firebase CLI'
         run: npm install -g firebase-tools
 
-      - name: 'Deploy to Firebase Hosting'
-        run: firebase deploy --only hosting --project lock-recon
+      - name: 'Debug Workflow Context'
+        run: |
+          pwd
+          ls -la
+          ls -la public/
+
+      - name: 'Deploy config validation'
+        run: firebase deploy --only hosting --project lock-recon --debug

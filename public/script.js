@@ -299,6 +299,7 @@ async function initiateScan() {
         btnScan.disabled = false;
         missionParams.classList.remove('params-scanning');
         hideScanOverlay();
+        document.getElementById('status-bar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
@@ -652,6 +653,7 @@ async function runLiveScrape(cfg) {
         btnScan.disabled = false;
         missionParams.classList.remove('params-scanning');
         hideScanOverlay();
+        document.getElementById('status-bar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 

@@ -21,13 +21,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-
       - name: 'Install Firebase CLI'
         run: npm install -g firebase-tools
 
       - name: 'Deploy to Firebase Hosting'
-        run: firebase deploy --only hosting --project lock-recon -m "GitHub Actions Auto Deploy (Unpoisoned Cache)"
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          echo $GOOGLE_APPLICATION_CREDENTIALS > service-account.json
+          export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
+          firebase deploy --only hosting --project lock-recon -m "Direct Auth Deploy"

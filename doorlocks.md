@@ -166,6 +166,12 @@ The scraper MUST be resilient to varying Cloudflare WAF or server-side HTTP anom
 - **Server-Side Abort:** The Puppeteer script MUST check the HTTP response status code explicitly. Any status `>= 400` must immediately throw an Error to prevent parsing Cloudflare HTML challenge pages or Rate Limit screens.
 - **Console Suppression:** All console telemetry containing permutations of HTTP Errors MUST be aggressively filtered upstream using Regex (e.g., `/\b[45]\d{2}\b/`) alongside strings like "waf", "cloudflare", "forbidden", "challenge", and "bot" to maintain the 'Zero Console Error' policy while still failing gracefully inside the Node.js orchestrator.
 
+### 7.4 Live DOM 500-Permutation Stress Test
+Before any final production Firebase deployment, the UI MUST be proven perfectly stable under chaotic load:
+- Spawning a Puppeteer instance pointed at the live domain (e.g., `https://lock-recon.web.app`).
+- Executing **500 sequential random toggles** across all Dropdowns, Radios, Text searches, and Checkboxes directly in the DOM.
+- The UI MUST sustain these 500 permutations with zero freezes, unhandled React/Vanilla JS exceptions, or memory limits reached.
+
 ### 7.4 Console Telemetry & Logging
 All events MUST be logged with ISO 8601 timestamps:
 - Scrape start / end per target
@@ -174,14 +180,15 @@ All events MUST be logged with ISO 8601 timestamps:
 - Final per-target pass/fail status
 - Total token consumption across all calls
 
-### 7.5 Completion Criteria
+### 7.6 Completion Criteria
 The run is considered fully successful when:
 - ≥ 4 of 6 targets return at least one valid lock object
 - Every returned lock object contains all 7 required fields (or `N/A` for unavailable fields)
 - Zero unhandled exceptions in the Node.js process
+- The 500 Live Permutations DOM test passes with 0 crashes.
 - Telemetry report generated and saved to `logs/last_run.json`
 
-### 7.6 Test Report Output
+### 7.7 Test Report Output
 Upon completion, generate `logs/last_run.json` containing:
 - ISO 8601 timestamp of run
 - Per-target: URL, status, retry count, locks extracted, Gemini token usage

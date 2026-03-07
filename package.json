@@ -1,6 +1,6 @@
 {
     "name": "door-locks-recon",
-    "version": "1.6.9",
+    "version": "1.6.10",
     "description": "UK High-Security Door Lock Reconnaissance System",
     "main": "server/index.js",
     "type": "module",

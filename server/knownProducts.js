@@ -360,8 +360,8 @@ export const KNOWN_PRODUCTS = [
     // ABLOY — disc-detainer cylinders, highest pick-resistance available
     // ══════════════════════════════════════════════════════════════════════════
     {
-        keywords: ['abloy', 'protec2'],
-        product_url: 'https://www.abloy.com/gb/en/products/mechanical-locking-systems/cylinders',
+        keywords: ['abloy', 'protec', 'easy'],
+        product_url: 'https://www.abloy.com/gb/en',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£180.00',
         cylinder_type: 'double euro',
@@ -380,7 +380,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['abloy'],
-        product_url: 'https://www.abloy.com/gb/en/products/mechanical-locking-systems/cylinders',
+        product_url: 'https://www.abloy.com/gb/en',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£150.00',
         cylinder_type: 'double euro',
@@ -419,8 +419,8 @@ export const KNOWN_PRODUCTS = [
     // MILLENCO — Guardsman TS007 3-star cylinders
     // ══════════════════════════════════════════════════════════════════════════
     {
-        keywords: ['millenco', 'guardsman'],
-        product_url: 'https://www.millenco.com/guardsman/',
+        keywords: ['millenco', 'magnum'],
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://cdn11.bigcommerce.com/s-fytdcmxyp5/images/stencil/608x608/products/403/14516/yale-platinum-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007__24675.1755510045.jpg?c=2',
         price_gbp: '£42.00',
         cylinder_type: 'double euro',
@@ -438,7 +438,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['millenco'],
-        product_url: 'https://www.millenco.com/cylinders/',
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://cdn11.bigcommerce.com/s-fytdcmxyp5/images/stencil/608x608/products/403/14516/yale-platinum-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007__24675.1755510045.jpg?c=2',
         price_gbp: '£42.00',
         cylinder_type: 'double euro',
@@ -458,7 +458,7 @@ export const KNOWN_PRODUCTS = [
     // ══════════════════════════════════════════════════════════════════════════
     {
         keywords: ['union', '3c35'],
-        product_url: 'https://www.union.co.uk/mortice-locks/',
+        product_url: 'https://www.uniononline.co.uk/',
         lock_image: 'https://cdn11.bigcommerce.com/s-fytdcmxyp5/images/stencil/608x608/products/1101/12232/era-fortress-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007__08166.1755510467.jpg?c=2',
         price_gbp: '£45.00',
         cylinder_type: 'mortice',
@@ -471,7 +471,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['union'],
-        product_url: 'https://www.union.co.uk/products/',
+        product_url: 'https://www.uniononline.co.uk/',
         lock_image: 'https://assets-a.safe.co.uk/products/grande/234914.jpg',
         price_gbp: '£45.00',
         cylinder_type: 'mortice',
@@ -490,8 +490,8 @@ export const KNOWN_PRODUCTS = [
     // INGERSOLL — 10T cylinder, SS312 Diamond rated
     // ══════════════════════════════════════════════════════════════════════════
     {
-        keywords: ['ingersoll', '10t'],
-        product_url: 'https://www.ingersoll.co.uk/products/',
+        keywords: ['ingersoll', 'scuba'],
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£75.00',
         cylinder_type: 'double euro',
@@ -509,7 +509,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['ingersoll'],
-        product_url: 'https://www.ingersoll.co.uk/cylinders/',
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£75.00',
         cylinder_type: 'double euro',
@@ -553,7 +553,7 @@ export const KNOWN_PRODUCTS = [
     // ══════════════════════════════════════════════════════════════════════════
     {
         keywords: ['uap', 'lockmaster'],
-        product_url: 'https://www.uaponline.com/cylinders/',
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://cdn11.bigcommerce.com/s-fytdcmxyp5/images/stencil/608x608/products/403/14516/yale-platinum-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007__24675.1755510045.jpg?c=2',
         price_gbp: '£39.99',
         cylinder_type: 'double euro',
@@ -572,7 +572,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['uap'],
-        product_url: 'https://www.uaponline.com/cylinders/',
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://cdn11.bigcommerce.com/s-fytdcmxyp5/images/stencil/608x608/products/403/14516/yale-platinum-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007__24675.1755510045.jpg?c=2',
         price_gbp: '£39.99',
         cylinder_type: 'double euro',
@@ -653,7 +653,7 @@ export const KNOWN_PRODUCTS = [
     // ══════════════════════════════════════════════════════════════════════════
     {
         keywords: ['asec'],
-        product_url: 'https://www.asec.co.uk/cylinders/',
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://cdn11.bigcommerce.com/s-fytdcmxyp5/images/stencil/608x608/products/403/14516/yale-platinum-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007__24675.1755510045.jpg?c=2',
         price_gbp: '£28.00',
         cylinder_type: 'double euro',
@@ -675,7 +675,7 @@ export const KNOWN_PRODUCTS = [
     // ══════════════════════════════════════════════════════════════════════════
     {
         keywords: ['winkhaus', 'keytec'],
-        product_url: 'https://www.winkhaus.co.uk/cylinders/',
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://cdn11.bigcommerce.com/s-fytdcmxyp5/images/stencil/608x608/products/403/14516/yale-platinum-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007__24675.1755510045.jpg?c=2',
         price_gbp: '£52.00',
         cylinder_type: 'double euro',
@@ -694,7 +694,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['winkhaus'],
-        product_url: 'https://www.winkhaus.co.uk/products/',
+        product_url: 'https://lockandkeyshop.co.uk/',
         lock_image: 'https://www.winkhaus.co.uk/wp-content/uploads/winkhaus-cylinder.jpg',
         price_gbp: '£48.00',
         cylinder_type: 'double euro',

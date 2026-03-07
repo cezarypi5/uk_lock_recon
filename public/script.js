@@ -578,6 +578,9 @@ function openTargetModal(lock) {
             modalActionBtn.style.display = 'none';
         } else {
             let purchaseUrl = lock.product_url;
+            if (purchaseUrl && purchaseUrl.includes('evva.com')) {
+                purchaseUrl = 'https://evvakeys.co.uk/';
+            }
             if (purchaseUrl && !purchaseUrl.startsWith('http://') && !purchaseUrl.startsWith('https://')) {
                 purchaseUrl = 'https://' + purchaseUrl;
             }

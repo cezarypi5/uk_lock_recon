@@ -135,8 +135,8 @@ export const KNOWN_PRODUCTS = [
         lock_category: 'euro-cylinder',
     },
     {
-        keywords: ['avocet', 'abs'],
-        product_url: 'https://www.avocet-hardware.co.uk/abs-master-euro-lock-cylinder/',
+        keywords: ['avocet', 'abs', 'star'],
+        product_url: 'https://www.avocet-hardware.co.uk/product/abs-master/',
         lock_image: 'https://assets-a.safe.co.uk/products/grande/234914.jpg',
         price_gbp: '£49.75',
         cylinder_type: 'double euro',
@@ -168,8 +168,8 @@ export const KNOWN_PRODUCTS = [
         lock_category: 'euro-cylinder',
     },
     {
-        keywords: ['avocet'],
-        product_url: 'https://www.avocet-hardware.co.uk/abs-master-euro-lock-cylinder/',
+        keywords: ['abs master'],
+        product_url: 'https://www.avocet-hardware.co.uk/product/abs-master/',
         lock_image: 'https://assets-a.safe.co.uk/products/grande/234914.jpg',
         price_gbp: '£49.75',
         cylinder_type: 'double euro',
@@ -322,8 +322,8 @@ export const KNOWN_PRODUCTS = [
     // BRISANT SECURE (manufacturer of Ultion WXM — separate brand entry)
     // ══════════════════════════════════════════════════════════════════════════
     {
-        keywords: ['brisant', 'ultion', 'wxm'],
-        product_url: 'https://www.brisantsecure.com/ultion/',
+        keywords: ['brisant', 'ultion'],
+        product_url: 'https://www.ultion-lock.co.uk/get-locks/order-locks/',
         lock_image: 'https://www.ultion-lock.co.uk/app/themes/consultancy/assets/images/locks/product-locks-3-star-plus-key-dual-new.jpg',
         price_gbp: '£63.00',
         cylinder_type: 'double euro',
@@ -341,7 +341,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['brisant'],
-        product_url: 'https://www.brisantsecure.com/ultion/',
+        product_url: 'https://www.ultion-lock.co.uk/get-locks/order-locks/',
         lock_image: 'https://www.ultion-lock.co.uk/app/themes/consultancy/assets/images/locks/product-locks-3-star-plus-key-dual-new.jpg',
         price_gbp: '£63.00',
         cylinder_type: 'double euro',

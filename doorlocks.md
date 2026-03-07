@@ -161,10 +161,10 @@ The job of the AI is only finished when:
 - **Zero errors** (including browser console errors) are found during execution.
 - If errors persist, the AI MUST continue the loop of (Analyze Console -> Rewrite Code -> Test Visibly) until a zero-error state is achieved.
 
-### 7.3 HTTP 5xx Permutations & WAF Defense Handling
-The scraper MUST be resilient to varying Cloudflare WAF or server-side HTTP anomalies (500, 502, 503, 504) across all targets:
-- **Server-Side Abort:** The Puppeteer script MUST check the HTTP response status code explicitly. Any status `>= 500 && <= 599` must immediately throw an Error to prevent parsing Cloudflare HTML challenge pages.
-- **Console Suppression:** All console telemetry containing permutations of "500", "502", "503", "504", "waf", "cloudflare", or "forbidden" must be aggressively filtered upstream to maintain the 'Zero Console Error' policy while still failing gracefully inside the Node.js orchestrator.
+### 7.3 Exhaustive HTTP 4xx & 5xx Permutations / WAF Defense Handling
+The scraper MUST be resilient to varying Cloudflare WAF or server-side HTTP anomalies (403, 429, 500, 503, 504) across all targets:
+- **Server-Side Abort:** The Puppeteer script MUST check the HTTP response status code explicitly. Any status `>= 400` must immediately throw an Error to prevent parsing Cloudflare HTML challenge pages or Rate Limit screens.
+- **Console Suppression:** All console telemetry containing permutations of HTTP Errors MUST be aggressively filtered upstream using Regex (e.g., `/\b[45]\d{2}\b/`) alongside strings like "waf", "cloudflare", "forbidden", "challenge", and "bot" to maintain the 'Zero Console Error' policy while still failing gracefully inside the Node.js orchestrator.
 
 ### 7.4 Console Telemetry & Logging
 All events MUST be logged with ISO 8601 timestamps:

@@ -32,12 +32,12 @@ jobs:
           echo $GOOGLE_APPLICATION_CREDENTIALS > service-account.json
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
           
-          echo "Starting Firebase Deploy with Debug..." > deploy_debug.log
-          firebase deploy --only hosting --project lock-recon --debug >> deploy_debug.log 2>&1
+          echo "Starting Firebase Deploy with Debug..." > deploy_debug.txt
+          firebase deploy --only hosting --project lock-recon --debug >> deploy_debug.txt 2>&1
           
           echo "Committing telemetry back to repository..."
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add deploy_debug.log
-          git commit -m "ci(telemetry): action reverse-commit of deploy_debug.log [skip ci]"
+          git add deploy_debug.txt
+          git commit -m "ci(telemetry): action reverse-commit of deploy_debug.txt [skip ci]"
           git push

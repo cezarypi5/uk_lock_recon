@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="version" content="1.6.6" />
+  <meta name="version" content="1.6.7" />
   <meta name="description"
     content="UK High-Security Door Lock Intelligence Dashboard — TS007 3-Star, SS312 Diamond, BS3621 compliant lock finder with advanced filtering." />
 
@@ -33,7 +33,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@700;900&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=1.6.6" />
+  <link rel="stylesheet" href="styles.css?v=1.6.7" />
 </head>
 
 <body>
@@ -105,6 +105,15 @@
       <h2 class="params-title">⬡ MISSION PARAMETERS // FULL LOCK SPECIFICATION</h2>
 
       <div class="params-grid">
+
+        <!-- ── 0. Keyword Target ──────────────────────────────── -->
+        <div class="param-group param-full">
+          <div class="param-label">🎯 TEXT SEARCH / MANUFACTURER</div>
+          <p class="param-hint">Filter by specific brand (e.g., 'Yale', 'Ultion') or model name.</p>
+          <input type="text" id="keyword-search" class="search-input"
+            placeholder="Enter target keyword (e.g. Abloy Protec2)..." autocomplete="off"
+            style="width: 100%; padding: 0.8rem; background: rgba(0,243,255,0.05); border: 1px solid var(--neon-cyan); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; outline: none; margin-top: 0.5rem;" />
+        </div>
 
         <!-- ── 1. Security Tier ──────────────────────────────── -->
         <div class="param-group param-full">
@@ -489,16 +498,16 @@
       <span class="footer-label">SECURED BY DESIGN</span>
       <span class="footer-count" id="footer-compliant-count">— AWAITING DATA —</span>
     </div>
-    <span class="footer-version">UK SUPER AGENT LOCK FINDER v1.6.6 // CYBERCORE</span>
+    <span class="footer-version">UK SUPER AGENT LOCK FINDER v1.6.7 // CYBERCORE</span>
   </footer>
 
   <!-- Firebase Integration -->
   <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore-compat.js"></script>
-  <script src="firebaseConfig.js?v=1.6.6"></script>
+  <script src="firebaseConfig.js?v=1.6.7"></script>
 
   <!-- UI App Logic -->
-  <script type="module" src="script.js?v=1.6.6"></script>
+  <script type="module" src="script.js?v=1.6.7"></script>
 
   <!-- Toast Notifications Container -->
   <div id="toast-container" class="toast-container"></div>

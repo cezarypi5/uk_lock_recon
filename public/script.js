@@ -45,7 +45,7 @@ const modalPrice = document.getElementById('modal-price');
 const modalCerts = document.getElementById('modal-certs');
 const modalActionBtn = document.getElementById('modal-action-btn');
 const dbSyncReadout = document.getElementById('db-sync-readout');
-
+const keywordSearch = document.getElementById('keyword-search');
 // ── Global State ─────────────────────────────────────────────────────────────
 let allLocksCache = [];
 const isLiveMode = new URLSearchParams(window.location.search).get('mode') === 'live';
@@ -126,6 +126,7 @@ function getConfig() {
     const externalMm = useAdvanced ? (parseInt(sizeExt.value, 10) || 35) : null;
     const internalMm = useAdvanced ? (parseInt(sizeInt.value, 10) || 35) : null;
     return {
+        searchTerm: keywordSearch ? keywordSearch.value.trim().toLowerCase() : '',
         securityTier: document.querySelector('input[name="security-tier"]:checked')?.value ?? 'any',
         budget: document.querySelector('input[name="budget"]:checked')?.value ?? 'any',
         environment: document.querySelector('input[name="environment"]:checked')?.value ?? 'any',
@@ -147,6 +148,12 @@ const TYPE_LABELS = { any: 'Any Type', double: 'Double Euro', thumbturn: 'Thumbt
 // ── Client-side filter ────────────────────────────────────────────────────────
 function filterLocks(locks, cfg) {
     return locks.filter(lock => {
+
+        // 0. Keyword Search
+        if (cfg.searchTerm) {
+            const searchTarget = `${lock.manufacturer} ${lock.model_name}`.toLowerCase();
+            if (!searchTarget.includes(cfg.searchTerm)) return false;
+        }
 
         // 1. Security Tier
         if (cfg.securityTier !== 'any') {
@@ -225,6 +232,7 @@ function resetFilters() {
     document.querySelectorAll('input[name="door-type"]').forEach((r, i) => r.checked = i === 0);
     document.querySelectorAll('input[name="cylinder-type"]').forEach((r, i) => r.checked = i === 0);
     document.querySelectorAll('input[name="attack"]').forEach(cb => cb.checked = false);
+    if (keywordSearch) keywordSearch.value = '';
     // Reset total length
     if (sizeTotal) { sizeTotal.value = 70; updateSplitPreview(70); }
     selectSizeRow(70);
@@ -661,6 +669,21 @@ btnReset.addEventListener('click', () => {
     resetFilters();
     showToast('Filters Reset', 'info', 2000);
 });
+document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+    el.addEventListener('change', () => {
+        if (allLocksCache.length > 0) renderResults(allLocksCache, getConfig(), null);
+    });
+});
+if (sortSelect) {
+    sortSelect.addEventListener('change', () => {
+        if (allLocksCache.length > 0) renderResults(allLocksCache, getConfig(), null);
+    });
+}
+if (keywordSearch) {
+    keywordSearch.addEventListener('input', () => {
+        if (allLocksCache.length > 0) renderResults(allLocksCache, getConfig(), null);
+    });
+}
 if (btnExport) {
     btnExport.addEventListener('click', generateDossier);
 }

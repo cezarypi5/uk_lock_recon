@@ -2,7 +2,7 @@ import 'dotenv/config';
 import targets from './targets.js';
 import { scrapeTarget } from './selfHeal.js';
 import * as telemetry from './telemetry.js';
-import { KNOWN_PRODUCTS } from './knownProducts.js';
+import { KNOWN_PRODUCTS, applyKnownProductFallbacks } from './knownProducts.js';
 import { db } from './firebaseAdmin.js'; // Firebase Cloud connection
 
 function knownProductToLock(entry, index) {
@@ -76,7 +76,7 @@ async function runNightlyScrape() {
             console.warn('[Worker] ⚠ Live scrape returned 0 locks — falling back to offline database');
             finalLocks = KNOWN_PRODUCTS.map(knownProductToLock);
         } else {
-            finalLocks = allLocks;
+            finalLocks = applyKnownProductFallbacks(allLocks);
         }
 
         console.log(`[Worker] Scrape finished. Found ${finalLocks.length} locks. Writing to Firestore...`);

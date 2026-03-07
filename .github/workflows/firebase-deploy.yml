@@ -26,14 +26,15 @@ jobs:
         with:
           credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
 
-      - name: 'Install Firebase CLI'
-        run: npm install -g firebase-tools
-
       - name: 'Debug Workflow Context'
         run: |
           pwd
           ls -la
+          echo "Checking public dir:"
           ls -la public/
 
+      - name: 'Install Firebase CLI'
+        run: npm install -g firebase-tools
+
       - name: 'Deploy config validation'
-        run: firebase deploy --only hosting --project lock-recon --debug
+        run: firebase deploy --only hosting --project lock-recon

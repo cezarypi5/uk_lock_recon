@@ -729,10 +729,10 @@ export function applyKnownProductFallbacks(locks) {
 
         return {
             ...lock,
-            // Core data
-            product_url: lock.product_url === 'N/A' ? match.product_url : lock.product_url,
-            lock_image: lock.lock_image === 'N/A' ? match.lock_image : lock.lock_image,
-            price_gbp: lock.price_gbp === 'N/A' ? match.price_gbp : lock.price_gbp,
+            // Core data (Authoritative overrides for explicitly known flagship products)
+            product_url: match.product_url ? match.product_url : lock.product_url,
+            lock_image: match.lock_image ? match.lock_image : lock.lock_image,
+            price_gbp: match.price_gbp ? match.price_gbp : lock.price_gbp,
             // Cylinder spec
             cylinder_type: (!lock.cylinder_type || lock.cylinder_type === 'N/A') && match.cylinder_type
                 ? match.cylinder_type : lock.cylinder_type,

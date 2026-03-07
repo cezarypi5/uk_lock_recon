@@ -27,6 +27,9 @@ jobs:
       - name: 'Install Firebase CLI'
         run: npm install -g firebase-tools
 
+      - name: 'Run Native HTTP Link Validation Matrix'
+        run: node test/exhaustive_http_20.js
+
       - name: 'Deploy to Firebase Hosting'
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

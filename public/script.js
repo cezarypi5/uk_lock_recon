@@ -590,8 +590,25 @@ function openTargetModal(lock) {
             if (purchaseUrl && !purchaseUrl.startsWith('http://') && !purchaseUrl.startsWith('https://')) {
                 purchaseUrl = 'https://' + purchaseUrl;
             }
+
             modalActionBtn.style.display = 'inline-flex';
             modalActionBtn.href = purchaseUrl;
+
+            // Autonomous Frontend Fallback Resiliency
+            // Pre-flight check the URL. If it times out or 404s from the client's perspective,
+            // dynamically swap the button href to a guaranteed safe aggregator link.
+            const genericAggregatorUrl = `https://lockandkeyshop.co.uk/search?q=${encodeURIComponent(lock.manufacturer + ' ' + lock.model_name)}`;
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second max TTL
+
+            fetch(purchaseUrl, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
+                .then(() => clearTimeout(timeoutId))
+                .catch(() => {
+                    // Network Error, CORS Block (assumed failure), or Timeout
+                    console.warn(`[Auto-Heal] Primary target ${purchaseUrl} unresponsive. Swapping to fallback aggregator.`);
+                    modalActionBtn.href = genericAggregatorUrl;
+                });
         }
     }, 800);
 }

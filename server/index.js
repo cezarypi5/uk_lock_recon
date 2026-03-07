@@ -4,6 +4,7 @@ import { scrapeTarget } from './selfHeal.js';
 import * as telemetry from './telemetry.js';
 import { KNOWN_PRODUCTS, applyKnownProductFallbacks } from './knownProducts.js';
 import { db } from './firebaseAdmin.js'; // Firebase Cloud connection
+import { LinkValidator } from './lib/LinkValidator.js';
 
 function knownProductToLock(entry, index) {
     const kw = entry.keywords ?? [];
@@ -36,11 +37,7 @@ function deriveAccreditations(tier) {
     return ['BS3621'];
 }
 
-// Generate a valid Firestore document ID
-function generateDocId(lock) {
-    const raw = `${lock.manufacturer}-${lock.model_name}`;
-    return raw.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-}
+
 
 async function runNightlyScrape() {
     console.log('\n┌─────────────────────────────────────────────┐');
@@ -85,9 +82,15 @@ async function runNightlyScrape() {
         const batch = db.batch();
         const locksRef = db.collection('locks');
 
+        console.log(`[Worker] Validating and sanitizing ${finalLocks.length} locked routes via LinkValidator...`);
+
         for (const lock of finalLocks) {
-            const docId = generateDocId(lock);
+            const docId = lock.manufacturer.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() + '_' + lock.model_name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
             const docRef = locksRef.doc(docId);
+
+            // Autonomous URL Self-Healing Filter before committing to Live Database
+            lock.product_url = await LinkValidator.validateAndHeal(lock.product_url);
+
             batch.set(docRef, lock);
         }
 

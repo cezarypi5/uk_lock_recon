@@ -579,9 +579,6 @@ function openTargetModal(lock) {
             modalActionBtn.style.display = 'none';
         } else {
             let purchaseUrl = lock.product_url;
-            if (purchaseUrl && purchaseUrl.includes('evva.com')) {
-                purchaseUrl = 'https://evvakeys.co.uk/';
-            }
             if (purchaseUrl && !purchaseUrl.startsWith('http://') && !purchaseUrl.startsWith('https://')) {
                 purchaseUrl = 'https://' + purchaseUrl;
             }
@@ -743,7 +740,7 @@ function generateDossier() {
     // Map objects to CSV rows
     const rows = currentRenderedData.map(lock => {
         const mfg = `"${esc(lock.manufacturer || 'Unknown')}"`;
-        const model = `"${esc(lock.model || 'Unknown')}"`;
+        const model = `"${esc(lock.model_name || 'Unknown')}"`;
         const tier = `"${esc(deriveTier(lock) || 'N/A')}"`;
 
         // Combine certs safely
@@ -754,7 +751,7 @@ function generateDossier() {
         const certs = `"${certsArr.join(', ')}"`;
 
         const price = `"${esc(lock.price_gbp || 'N/A')}"`;
-        const url = `"${lock.url || ''}"`;
+        const url = `"${lock.product_url || ''}"`;
 
         return [mfg, model, tier, certs, price, url].join(',');
     });

@@ -361,7 +361,7 @@ export const KNOWN_PRODUCTS = [
     // ══════════════════════════════════════════════════════════════════════════
     {
         keywords: ['abloy', 'protec2'],
-        product_url: 'https://abloy.co.uk/products/cylinders/protec2/',
+        product_url: 'https://www.abloy.com/gb/en/products/mechanical-locking-systems/cylinders',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£180.00',
         cylinder_type: 'double euro',
@@ -380,7 +380,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['abloy'],
-        product_url: 'https://abloy.co.uk/products/cylinders/',
+        product_url: 'https://www.abloy.com/gb/en/products/mechanical-locking-systems/cylinders',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£150.00',
         cylinder_type: 'double euro',
@@ -592,7 +592,7 @@ export const KNOWN_PRODUCTS = [
     // ══════════════════════════════════════════════════════════════════════════
     {
         keywords: ['evva', 'eps'],
-        product_url: 'https://evvakeys.co.uk/',
+        product_url: 'https://www.evva.com/uk-en/',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£120.00',
         cylinder_type: 'double euro',
@@ -611,7 +611,7 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['evva'],
-        product_url: 'https://evvakeys.co.uk/',
+        product_url: 'https://www.evva.com/uk-en/',
         lock_image: 'https://files.ekmcdn.com/b1ccd1/images/mul-t-lock-integrator-xp-3-star-snap-safe-euro-cylinder-cylinder-size-95mm-40mm-external-55mm-internal-2804-p.jpg',
         price_gbp: '£120.00',
         cylinder_type: 'double euro',

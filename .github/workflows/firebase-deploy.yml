@@ -29,13 +29,5 @@ jobs:
       - name: 'Install Firebase CLI'
         run: npm install -g firebase-tools
 
-      - name: 'Check Workspace Context'
-        run: |
-          echo "Workspace is: ${{ github.workspace }}"
-          cd ${{ github.workspace }}
-          ls -la
-
       - name: 'Deploy to Firebase Hosting'
-        run: |
-          cd ${{ github.workspace }}
-          firebase deploy --only hosting --project lock-recon -m "Workspace Deployment Test"
+        run: firebase deploy --only hosting --project lock-recon -m "GitHub Actions Auto Deploy (Unpoisoned Cache)"

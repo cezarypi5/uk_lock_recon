@@ -4,3 +4,4 @@ logs/
 .DS_Store
 server/service-account.json
 *.log
+.firebase/

@@ -30,4 +30,4 @@ jobs:
         run: |
           echo $GOOGLE_APPLICATION_CREDENTIALS > service-account.json
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
-          firebase deploy --only hosting --project lock-recon -m "Direct Auth Deploy"
+          firebase deploy --only hosting --project lock-recon -m "Direct Auth Deploy with Debug" --debug

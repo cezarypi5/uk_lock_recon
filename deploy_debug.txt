@@ -1,0 +1,78 @@
+Starting Firebase Deploy with Debug at Sat Mar  7 14:52:12 UTC 2026...
+[2026-03-07T14:52:14.048Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[2026-03-07T14:52:14.103Z] Running auto auth
+[2026-03-07T14:52:14.104Z] [iam] checking project lock-recon for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[2026-03-07T14:52:14.104Z] No OAuth tokens found
+[2026-03-07T14:52:14.105Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/lock-recon:testIamPermissions [none]
+[2026-03-07T14:52:14.105Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/lock-recon:testIamPermissions  x-goog-user-project=lock-recon
+[2026-03-07T14:52:14.105Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/lock-recon:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[2026-03-07T14:52:14.130Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[2026-03-07T14:52:14.130Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[2026-03-07T14:52:14.338Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/lock-recon:testIamPermissions 403
+[2026-03-07T14:52:14.338Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/lock-recon:testIamPermissions {"error":{"code":403,"message":"Caller does not have required permission to use project lock-recon. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=lock-recon and then retry. Propagation of the new permission may take a few minutes.","status":"PERMISSION_DENIED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"USER_PROJECT_DENIED","domain":"googleapis.com","metadata":{"containerInfo":"lock-recon","service":"cloudresourcemanager.googleapis.com","consumer":"projects/lock-recon","consoleUrl":"https://console.developers.google.com/iam-admin/iam?project=lock-recon"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"Caller does not have required permission to use project lock-recon. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=lock-recon and then retry. Propagation of the new permission may take a few minutes."},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Google developer console IAM admin","url":"https://console.developers.google.com/iam-admin/iam?project=lock-recon"}]}]}}
+[2026-03-07T14:52:14.339Z] [iam] error while checking permissions, command may fail: Request to https://cloudresourcemanager.googleapis.com/v1/projects/lock-recon:testIamPermissions had HTTP Error: 403, Caller does not have required permission to use project lock-recon. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=lock-recon and then retry. Propagation of the new permission may take a few minutes.
+[2026-03-07T14:52:14.339Z] No OAuth tokens found
+[2026-03-07T14:52:14.340Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/lock-recon [none]
+[2026-03-07T14:52:14.669Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/lock-recon 200
+[2026-03-07T14:52:14.669Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/lock-recon {"projectId":"lock-recon","projectNumber":"482615452902","displayName":"Lock Recon","name":"projects/lock-recon","resources":{"hostingSite":"lock-recon"},"state":"ACTIVE","etag":"1_f8413441-9efa-4fba-ad5a-36024ea7d053"}
+
+=== Deploying to 'lock-recon'...
+
+i  deploying hosting 
+[2026-03-07T14:52:14.672Z] No OAuth tokens found
+[2026-03-07T14:52:14.672Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/versions [none]
+[2026-03-07T14:52:14.672Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[2026-03-07T14:52:15.623Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/versions 200
+[2026-03-07T14:52:15.624Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/versions {"name":"projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+i  hosting[lock-recon]: beginning deploy... 
+i  hosting[lock-recon]: found 5 files in public 
+[2026-03-07T14:52:15.634Z] [hosting] uploading with 200 concurrency
+[2026-03-07T14:52:15.635Z] [hosting] hash cache [cHVibGlj] not populated
+[2026-03-07T14:52:15.659Z] No OAuth tokens found
+[2026-03-07T14:52:15.660Z] [hosting] hash cache [cHVibGlj] stored for 5 files
+[2026-03-07T14:52:15.660Z] [hosting][hash queue][FINAL] {"max":23,"min":4,"avg":8.4,"active":0,"complete":5,"success":5,"errored":0,"retried":0,"total":5,"elapsed":25}
+[2026-03-07T14:52:15.660Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353:populateFiles [none]
+[2026-03-07T14:52:15.660Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353:populateFiles {"files":{"/index.html":"21924b320cf632aae3ade5c322931272442ec842ba90d4cf141dabd9cdf68e6d","/firebaseConfig.js":"2a8ec6efa1fcafaaee5d57e81b35f1ddbe55bacd99d6d69ad6b7f7cb007c484e","/styles.css":"89cf12e60fb598073695877a6375e8506e3399ab9aa2b7c090856acf1a2855d6","/script.js":"051051a8146dec8fea4c39423ae8c994950142b1157876f406e74d78445dfde3","/assets/images/social-preview.png":"d0fe7b0c8fb94e9de5706110aad0202764220271d8907c78b669b2c90c24a06d"}}
+[2026-03-07T14:52:16.073Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353:populateFiles 200
+[2026-03-07T14:52:16.073Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353:populateFiles {"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/lock-recon/versions/ad2cb251c7eb4353/files"}
+[2026-03-07T14:52:16.073Z] [hosting][populate queue][FINAL] {"max":414,"min":414,"avg":414,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":414}
+[2026-03-07T14:52:16.073Z] [hosting] uploads queued: 0
+[2026-03-07T14:52:16.073Z] [hosting][upload queue][FINAL] {"max":0,"min":9999999999,"avg":0,"active":0,"complete":0,"success":0,"errored":0,"retried":0,"total":0,"elapsed":1772895136073}
+i  hosting: upload complete 
+✔  hosting[lock-recon]: file upload complete 
+[2026-03-07T14:52:16.074Z] [hosting] deploy completed after 448ms
+[2026-03-07T14:52:16.074Z] [
+  {
+    "config": {
+      "public": "public",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "site": "lock-recon"
+    },
+    "version": "projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353"
+  }
+]
+i  hosting[lock-recon]: finalizing version... 
+[2026-03-07T14:52:16.075Z] No OAuth tokens found
+[2026-03-07T14:52:16.075Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/versions/ad2cb251c7eb4353 updateMask=status%2Cconfig
+[2026-03-07T14:52:16.075Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/versions/ad2cb251c7eb4353 {"status":"FINALIZED","config":{}}
+[2026-03-07T14:52:16.711Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/versions/ad2cb251c7eb4353 200
+[2026-03-07T14:52:16.711Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/versions/ad2cb251c7eb4353 {"name":"projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-07T14:52:15.051170Z","createUser":{"email":"firebase-adminsdk-fbsvc@lock-recon.iam.gserviceaccount.com"},"finalizeTime":"2026-03-07T14:52:16.625242Z","finalizeUser":{"email":"firebase-adminsdk-fbsvc@lock-recon.iam.gserviceaccount.com"}}
+[2026-03-07T14:52:16.711Z] [hosting] finalized version for lock-recon:[object Object]
+✔  hosting[lock-recon]: version finalized 
+i  hosting[lock-recon]: releasing new version... 
+[2026-03-07T14:52:16.711Z] No OAuth tokens found
+[2026-03-07T14:52:16.712Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/channels/live/releases versionName=projects%2F482615452902%2Fsites%2Flock-recon%2Fversions%2Fad2cb251c7eb4353
+[2026-03-07T14:52:16.712Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/channels/live/releases {}
+[2026-03-07T14:52:17.233Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/channels/live/releases 200
+[2026-03-07T14:52:17.233Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/lock-recon/channels/live/releases {"name":"projects/482615452902/sites/lock-recon/channels/live/releases/1772895136464000","version":{"name":"projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-07T14:52:15.051170Z","createUser":{"email":"firebase-adminsdk-fbsvc@lock-recon.iam.gserviceaccount.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIC3yA0x4OnHt90r2qC10xp9NovtrmNPOC8PKbGzUcXlFzh9bs=mo"},"finalizeTime":"2026-03-07T14:52:16.625242Z","finalizeUser":{"email":"firebase-adminsdk-fbsvc@lock-recon.iam.gserviceaccount.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIC3yA0x4OnHt90r2qC10xp9NovtrmNPOC8PKbGzUcXlFzh9bs=mo"}},"type":"DEPLOY","releaseTime":"2026-03-07T14:52:16.464Z","releaseUser":{"email":"firebase-adminsdk-fbsvc@lock-recon.iam.gserviceaccount.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIC3yA0x4OnHt90r2qC10xp9NovtrmNPOC8PKbGzUcXlFzh9bs=mo"}}
+[2026-03-07T14:52:17.233Z] [hosting] release: {"name":"projects/482615452902/sites/lock-recon/channels/live/releases/1772895136464000","version":{"name":"projects/482615452902/sites/lock-recon/versions/ad2cb251c7eb4353","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-07T14:52:15.051170Z","createUser":{"email":"firebase-adminsdk-fbsvc@lock-recon.iam.gserviceaccount.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIC3yA0x4OnHt90r2qC10xp9NovtrmNPOC8PKbGzUcXlFzh9bs=mo"},"finalizeTime":"2026-03-07T14:52:16.625242Z","finalizeUser":{"email":"firebase-adminsdk-fbsvc@lock-recon.iam.gserviceaccount.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIC3yA0x4OnHt90r2qC10xp9NovtrmNPOC8PKbGzUcXlFzh9bs=mo"}},"type":"DEPLOY","releaseTime":"2026-03-07T14:52:16.464Z","releaseUser":{"email":"firebase-adminsdk-fbsvc@lock-recon.iam.gserviceaccount.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIC3yA0x4OnHt90r2qC10xp9NovtrmNPOC8PKbGzUcXlFzh9bs=mo"}}
+✔  hosting[lock-recon]: release complete 
+
+✔  Deploy complete! 
+
+Project Console: https://console.firebase.google.com/project/lock-recon/overview
+Hosting URL: https://lock-recon.web.app

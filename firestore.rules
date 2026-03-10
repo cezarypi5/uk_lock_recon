@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Public read-only: lock intelligence data
+    match /locks/{doc} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Public read-only: telemetry run history
+    match /telemetry_runs/{doc} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Deny everything else by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

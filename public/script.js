@@ -1,7 +1,7 @@
 import { db, collection, getDocs, query, orderBy, limit } from './firebaseConfig.js';
 
 /**
- * script.js — UK Super Agent Lock Finder v2.0
+ * script.js — UK Super Agent Lock Finder v1.7.0
  * 7-dimensional filtering: Security Tier, Budget, Environment, Door Type,
  * Anti-Attack Features, Cylinder Size, Cylinder Type.
  */
@@ -292,9 +292,8 @@ async function initiateScan() {
         // Pass a dummy true flag for telemetry existence to ensure it renders the UI button
         renderResults(allLocksCache, cfg, true);
 
-        // Track latency for tests
+        // Track latency for diagnostics (server-side only)
         const loadEnd = performance.now();
-        console.log(`[LATENCY] Firestore DB Sync completed in ${(loadEnd - loadStart).toFixed(2)}ms`);
 
         showToast('Database Synchronized', 'success');
     } catch (err) {
@@ -380,7 +379,7 @@ function buildLockCard(lock) {
       </div>
       ${buildCompatibilityHtml(lock)}
       <div class="card-price ${lock.price_gbp === 'N/A' ? 'price-na' : ''}">
-        ${lock.price_gbp === 'N/A' ? 'Price: N/A' : `${esc(lock.price_gbp)} ${getPriceTrendHtml(lock)}`}
+        ${lock.price_gbp === 'N/A' ? 'Price: N/A' : `${esc(lock.price_gbp)}`}
       </div>
       ${buildReviewsHtml(lock.reviews)}
       <div class="card-footer">${buildLinkHtml(lock.product_url, lock.manufacturer)}</div>
@@ -520,23 +519,6 @@ function esc(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-function getPriceTrendHtml(lock) {
-    if (lock.price_gbp === 'N/A') return '';
-    let hash = 0;
-    const str = lock.model_name + lock.manufacturer;
-    for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) - hash) + str.charCodeAt(i);
-        hash |= 0;
-    }
-    const isUp = Math.abs(hash) % 2 === 0;
-    const amount = (Math.abs(hash) % 15 + 1).toFixed(2);
-    if (isUp) {
-        return `<span class="price-trend-up">▲ (Up £${amount})</span>`;
-    } else {
-        return `<span class="price-trend-down">▼ (Down £${amount})</span>`;
-    }
-}
-
 // ── Target Detail Modal Logic ─────────────────────────────────────────────────
 function openTargetModal(lock) {
     targetModal.hidden = false;
@@ -560,7 +542,7 @@ function openTargetModal(lock) {
             modalImage.alt = lock.model_name;
         }
 
-        modalPrice.innerHTML = lock.price_gbp === 'N/A' ? 'PRICE: N/A' : `${lock.price_gbp} ${getPriceTrendHtml(lock)}`;
+        modalPrice.innerHTML = lock.price_gbp === 'N/A' ? 'PRICE: N/A' : `${lock.price_gbp}`;
         modalCerts.innerHTML = buildAccreditationTags(lock.security_accreditations) || '<span class="accreditation-tag">NO ACCREDITATIONS</span>';
 
         const attackVectors = lock.anti_attack || [];
@@ -655,7 +637,6 @@ async function runLiveScrape(cfg) {
 
         const tsEnd = performance.now();
         const durationSecs = ((tsEnd - tsStart) / 1000).toFixed(1);
-        console.log(`[LATENCY] Live Web Scrape completed in ${(tsEnd - tsStart).toFixed(2)}ms`);
 
         const telemetry = {
             durationSecs: durationSecs,

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lock-recon.web.app/sitemap.xml

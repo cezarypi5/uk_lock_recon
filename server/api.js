@@ -1,4 +1,4 @@
-﻿import http from 'http';
+import http from 'http';
 import { KNOWN_PRODUCTS } from './knownProducts.js';
 
 const PORT = 3001;
@@ -28,8 +28,12 @@ function knownProductToLock(entry, index) {
 }
 
 const server = http.createServer((req, res) => {
-    // CORS Headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    // CORS Headers — locked to production origin only
+    const allowedOrigins = ['https://lock-recon.web.app', 'http://localhost:5000', 'http://localhost:8080'];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

@@ -30,10 +30,10 @@ jobs:
       - name: 'Run Native HTTP Link Validation Matrix'
         run: node test/exhaustive_http_20.js
 
-      - name: 'Deploy to Firebase Hosting'
+      - name: 'Deploy to Firebase Hosting + Firestore Rules'
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           echo $GOOGLE_APPLICATION_CREDENTIALS > service-account.json
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
-          firebase deploy --only hosting --project lock-recon -m "Direct Auth Deploy"
+          firebase deploy --only hosting,firestore --project lock-recon -m "v1.7.0 Public Release"

@@ -5,3 +5,16 @@ logs/
 server/service-account.json
 *.log
 .firebase/
+
+# Debug & test artefacts (do not commit)
+extract_logs/
+ci_logs/
+scraper-error.log
+server_logs*.txt
+test_output*.txt
+deploy_debug.txt
+debug_log.txt
+db_test_log.txt
+config-clean.txt
+live_index.html
+old_index*.js

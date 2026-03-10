@@ -1,7 +1,7 @@
 import { db, collection, getDocs, query, orderBy, limit } from './firebaseConfig.js';
 
 /**
- * script.js — UK Super Agent Lock Finder v1.7.0
+ * script.js — UK Super Agent Lock Finder v1.7.1
  * 7-dimensional filtering: Security Tier, Budget, Environment, Door Type,
  * Anti-Attack Features, Cylinder Size, Cylinder Type.
  */
@@ -306,7 +306,7 @@ async function initiateScan() {
         btnScan.disabled = false;
         missionParams.classList.remove('params-scanning');
         hideScanOverlay();
-        document.getElementById('status-bar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('lock-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
@@ -656,7 +656,7 @@ async function runLiveScrape(cfg) {
         btnScan.disabled = false;
         missionParams.classList.remove('params-scanning');
         hideScanOverlay();
-        document.getElementById('status-bar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.getElementById('lock-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 

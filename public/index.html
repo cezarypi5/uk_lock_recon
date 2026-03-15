@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="version" content="1.7.2" />
+  <meta name="version" content="1.7.3" />
   <meta name="description"
     content="UK High-Security Door Lock Intelligence Dashboard — TS007 3-Star, SS312 Diamond, BS3621 compliant lock finder with advanced filtering." />
 
@@ -34,7 +34,7 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@700;900&display=swap"
     rel="stylesheet" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=1.7.2" />
+  <link rel="stylesheet" href="styles.css?v=1.7.3" />
 </head>
 
 <body>
@@ -83,19 +83,7 @@
         <p class="site-subtitle" style="margin-bottom: 0;">// SUPER AGENT LOCK FINDER — LIVE INTELLIGENCE SYSTEM</p>
         <span id="db-sync-readout" class="db-sync-readout">// DB SYNC: CALCULATING...</span>
       </div>
-      <div class="header-controls">
-        <div class="sort-control">
-          <label for="sort-select" class="sort-label">SORT:</label>
-          <select id="sort-select" class="sort-select">
-            <option value="threat-desc">Threat Level (Highest First)</option>
-            <option value="price-asc">Price (Low to High)</option>
-            <option value="price-desc">Price (High to Low)</option>
-          </select>
-        </div>
-        <button id="btn-scan" class="btn-primary" aria-label="Find Locks">⬡ FIND LOCKS</button>
-        <button id="btn-reset" class="btn-secondary" aria-label="Reset Filters">✕ RESET FILTERS</button>
-        <button id="btn-export" class="btn-action" aria-label="Export Dossier" disabled>⭳ DOSSIER</button>
-      </div>
+
   </header>
 
   <!-- ═══════════════════════════════════════════════════════
@@ -499,19 +487,35 @@
       <span class="footer-label">SECURED BY DESIGN</span>
       <span class="footer-count" id="footer-compliant-count">— AWAITING DATA —</span>
     </div>
-    <span class="footer-version">UK SUPER AGENT LOCK FINDER v1.7.2 // CYBERCORE</span>
+    <span class="footer-version">UK SUPER AGENT LOCK FINDER v1.7.3 // CYBERCORE</span>
   </footer>
 
   <!-- Firebase Integration -->
   <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore-compat.js"></script>
-  <script src="firebaseConfig.js?v=1.7.2"></script>
+  <script src="firebaseConfig.js?v=1.7.3"></script>
 
   <!-- UI App Logic -->
-  <script type="module" src="script.js?v=1.7.2"></script>
+  <script type="module" src="script.js?v=1.7.3"></script>
 
   <!-- Toast Notifications Container -->
   <div id="toast-container" class="toast-container"></div>
+
+  <!-- ── Floating Action Bar — always visible, fixed bottom-right ── -->
+  <div class="floating-action-bar" id="floating-action-bar" role="toolbar" aria-label="Primary actions">
+    <div class="sort-control fab-sort">
+      <label for="sort-select" class="sort-label">SORT:</label>
+      <select id="sort-select" class="sort-select">
+        <option value="threat-desc">Threat Level (Highest First)</option>
+        <option value="price-asc">Price (Low to High)</option>
+        <option value="price-desc">Price (High to Low)</option>
+      </select>
+    </div>
+    <button id="btn-scan" class="btn-primary" aria-label="Find Locks">⬡ FIND LOCKS</button>
+    <button id="btn-reset" class="btn-secondary" aria-label="Reset Filters">✕ RESET</button>
+    <button id="btn-export" class="btn-action" aria-label="Export Dossier" disabled>⭳ DOSSIER</button>
+  </div>
+
 </body>
 
 </html>

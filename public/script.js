@@ -281,7 +281,14 @@ async function initiateScan() {
     const loadStart = performance.now(); // Define loadStart here
 
     try {
-        const querySnapshot = await getDocs(collection(db, "locks"));
+        // ── Firestore timeout guard: 10s max wait ──────────────────────────
+        const firestoreTimeout = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Database did not respond — no locks found. Try again.')), 10000)
+        );
+        const querySnapshot = await Promise.race([
+            getDocs(collection(db, 'locks')),
+            firestoreTimeout
+        ]);
         const locks = [];
         querySnapshot.forEach((doc) => {
             locks.push(doc.data());
@@ -534,12 +541,27 @@ function openTargetModal(lock) {
         modalTitle.textContent = lock.model_name || 'UNKNOWN ASSET';
         modalTitle.setAttribute('data-text', modalTitle.textContent);
 
+        // ── Fix: image with 3s hard timeout → show placeholder if slow ──
         if (!lock.lock_image || lock.lock_image === 'N/A') {
             modalImage.parentElement.style.display = 'none';
         } else {
             modalImage.parentElement.style.display = 'flex';
-            modalImage.src = lock.lock_image;
             modalImage.alt = lock.model_name;
+            modalImage.style.display = 'block';
+            if (modalImage.nextElementSibling) modalImage.nextElementSibling.style.display = 'none';
+
+            let imgResolved = false;
+            const imgTimeout = setTimeout(() => {
+                if (!imgResolved) {
+                    imgResolved = true;
+                    modalImage.style.display = 'none';
+                    if (modalImage.nextElementSibling) modalImage.nextElementSibling.style.display = 'flex';
+                }
+            }, 3000);
+
+            modalImage.onload = () => { imgResolved = true; clearTimeout(imgTimeout); };
+            modalImage.onerror = () => { imgResolved = true; clearTimeout(imgTimeout); };
+            modalImage.src = lock.lock_image;
         }
 
         modalPrice.innerHTML = lock.price_gbp === 'N/A' ? 'PRICE: N/A' : `${lock.price_gbp}`;
@@ -565,6 +587,7 @@ function openTargetModal(lock) {
             }).join('');
         }
 
+        // ── Fix: direct link only, no preflight fetch (was causing 3-min delay) ──
         if (!lock.product_url || lock.product_url === 'N/A') {
             modalActionBtn.style.display = 'none';
         } else {
@@ -572,25 +595,8 @@ function openTargetModal(lock) {
             if (purchaseUrl && !purchaseUrl.startsWith('http://') && !purchaseUrl.startsWith('https://')) {
                 purchaseUrl = 'https://' + purchaseUrl;
             }
-
             modalActionBtn.style.display = 'inline-flex';
             modalActionBtn.href = purchaseUrl;
-
-            // Autonomous Frontend Fallback Resiliency
-            // Pre-flight check the URL. If it times out or 404s from the client's perspective,
-            // dynamically swap the button href to a guaranteed safe aggregator link.
-            const genericAggregatorUrl = `https://lockandkeyshop.co.uk/search?q=${encodeURIComponent(lock.manufacturer + ' ' + lock.model_name)}`;
-
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second max TTL
-
-            fetch(purchaseUrl, { method: 'HEAD', mode: 'no-cors', signal: controller.signal })
-                .then(() => clearTimeout(timeoutId))
-                .catch(() => {
-                    // Network Error, CORS Block (assumed failure), or Timeout
-                    console.warn(`[Auto-Heal] Primary target ${purchaseUrl} unresponsive. Swapping to fallback aggregator.`);
-                    modalActionBtn.href = genericAggregatorUrl;
-                });
         }
     }, 800);
 }

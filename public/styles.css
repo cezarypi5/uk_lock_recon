@@ -167,6 +167,60 @@ body {
   flex-wrap: wrap;
 }
 
+/* ── Floating Action Bar ── */
+.floating-action-bar {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(5, 5, 5, 0.92);
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  padding: 8px 14px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 0 20px var(--cyan-glow),
+    0 4px 24px rgba(0, 0, 0, 0.75);
+  transition: box-shadow 0.2s ease;
+}
+
+.floating-action-bar:hover {
+  box-shadow:
+    0 0 30px var(--cyan-glow),
+    0 6px 32px rgba(0, 0, 0, 0.85);
+}
+
+.fab-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 600px) {
+  .floating-action-bar {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px 1rem;
+    gap: 8px;
+  }
+
+  .fab-sort {
+    display: none; /* hide sort on mobile to save space — use default sort */
+  }
+}
+
+
 /* ── Buttons ── */
 .btn-primary,
 .btn-secondary {

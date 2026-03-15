@@ -161,6 +161,70 @@ export const TRANSLATIONS = {
         extractFailed:      '● EXTRACTION FAILED',
         zeroTargets:        '● ZERO TARGETS',
         zeroDetail:         'No locks match your specification — adjust parameters above.',
+
+        // Dynamic status bar detail (produced by JS)
+        targetsAcquired:    (n, filt, src) => `${n} target(s) acquired${filt ? ` (${filt} filtered out)` : ''} — ${src}`,
+        fromCache:          'from cache',
+        sourcesScanned:     (ok, total) => `${ok}/${total} sources scanned`,
+        targetCount:        n => `[${n} TARGETS]`,
+        compliantCount:     n => `${n} COMPLIANT LOCK(S)`,
+        zeroTargetCount:    '0 TARGETS',
+
+        // Card — cylinder type badges
+        badgeThumb:         '🔄 THUMBTURN',
+        badgeDouble:        '🔑🔑 D.EURO',
+
+        // Card — environment & door compatibility
+        envExtBadge:        '🏠 External',
+        envIntBadge:        '🚪 Internal',
+        doorUpvc:           '🔷 UPVC',
+        doorComposite:      '⬛ Composite',
+        doorTimber:         '🌲 Timber',
+        doorAluminium:      '🔩 Aluminium',
+
+        // Card — reviews / link
+        reviewsNA:          'Reviews: N/A',
+        priceNA:            'Price: N/A',
+        viewTarget:         '⬡ VIEW TARGET →',
+        productUrlNA:       'Product URL unavailable',
+        extractionFailed:   'EXTRACTION_FAILED',
+
+        // Modal
+        verifiedOrigin:     mfr => `✓ Verified Origin: ${mfr}`,
+        noAccreditations:   'NO ACCREDITATIONS',
+        priceModalNA:       'PRICE: N/A',
+
+        // Modal attack vector labels
+        vecAntiSnap:        'Anti-Snap',
+        vecAntiBump:        'Anti-Bump',
+        vecAntiDrill:       'Anti-Drill',
+        vecAntiPick:        'Anti-Pick',
+        vecAntiExtract:     'Anti-Extract',
+        vecVerified:        'VERIFIED',
+        vecVulnerable:      'VULNERABLE',
+
+        // Telemetry toggle
+        telTitle:           '▶ TELEMETRY // EXTRACTION LOG',
+        telTitleOpen:       '▼ TELEMETRY // EXTRACTION LOG',
+        telUnavailable:     'Telemetry unavailable: No runs completed yet.',
+        telError:           msg => `Telemetry unavailable: ${msg}`,
+
+        // Budget pills (HTML static labels)
+        budgetUnder40:      'Under £40',
+        budget4070:         '£40–£70',
+        budget70100:        '£70–£100',
+        budget100plus:      '£100+',
+
+        // Door material labels (HTML static)
+        doorAny:            'ANY',
+        doorUpvcLabel:      'UPVC',
+        doorCompositeLabel: 'COMPOSITE',
+        doorTimberLabel:    'TIMBER',
+        doorAluminiumLabel: 'ALUMINIUM',
+
+        // Advanced toggle button
+        advancedToggleBtn:     '▶ Advanced: specify external/internal split',
+        advancedToggleBtnOpen: '▼ Advanced: specify external/internal split',
     },
 
     pl: {
@@ -320,6 +384,70 @@ export const TRANSLATIONS = {
         extractFailed:      '● EKSTRAKCJA NIE POWIODŁA SIĘ',
         zeroTargets:        '● BRAK CELÓW',
         zeroDetail:         'Żaden zamek nie pasuje do specyfikacji — dostosuj parametry powyżej.',
+
+        // Dynamic status bar detail
+        targetsAcquired:    (n, filt, src) => `${n} wynik(ów) znalezionych${filt ? ` (${filt} odfiltrowanych)` : ''} — ${src}`,
+        fromCache:          'z pamięci podręcznej',
+        sourcesScanned:     (ok, total) => `${ok}/${total} źródeł przeskanowanych`,
+        targetCount:        n => `[${n} WYNIKÓW]`,
+        compliantCount:     n => `${n} ZGODNYCH ZAMKÓW`,
+        zeroTargetCount:    '0 WYNIKÓW',
+
+        // Card — cylinder type badges
+        badgeThumb:         '🔄 Z NAKRĘTKĄ',
+        badgeDouble:        '🔑🔑 PODWÓJNY',
+
+        // Card — environment & door compatibility
+        envExtBadge:        '🏠 Zewnętrzne',
+        envIntBadge:        '🚪 Wewnętrzne',
+        doorUpvc:           '🔷 UPVC',
+        doorComposite:      '⬛ Kompozyt',
+        doorTimber:         '🌲 Drewno',
+        doorAluminium:      '🔩 Aluminium',
+
+        // Card — reviews / link
+        reviewsNA:          'Recenzje: brak',
+        priceNA:            'Cena: brak',
+        viewTarget:         '⬡ PRZEJDŹ DO PRODUKTU →',
+        productUrlNA:       'URL produktu niedostępny',
+        extractionFailed:   'EKSTRAKCJA_NIEUDANA',
+
+        // Modal
+        verifiedOrigin:     mfr => `✓ Zweryfikowane źródło: ${mfr}`,
+        noAccreditations:   'BRAK CERTYFIKATÓW',
+        priceModalNA:       'CENA: BRAK',
+
+        // Modal attack vector labels
+        vecAntiSnap:        'Anty-Snap',
+        vecAntiBump:        'Anty-Bump',
+        vecAntiDrill:       'Anty-Wiertło',
+        vecAntiPick:        'Anty-Wytrychy',
+        vecAntiExtract:     'Anty-Wyciąganie',
+        vecVerified:        'CHRONIONE',
+        vecVulnerable:      'PODATNE',
+
+        // Telemetry toggle
+        telTitle:           '▶ TELEMETRIA // DZIENNIK EKSTRAKCJI',
+        telTitleOpen:       '▼ TELEMETRIA // DZIENNIK EKSTRAKCJI',
+        telUnavailable:     'Telemetria niedostępna: brak zakończonych przebiegów.',
+        telError:           msg => `Telemetria niedostępna: ${msg}`,
+
+        // Budget pills
+        budgetUnder40:      'Poniżej £40',
+        budget4070:         '£40–£70',
+        budget70100:        '£70–£100',
+        budget100plus:      '£100+',
+
+        // Door material labels
+        doorAny:            'DOWOLNE',
+        doorUpvcLabel:      'UPVC',
+        doorCompositeLabel: 'KOMPOZYT',
+        doorTimberLabel:    'DREWNO',
+        doorAluminiumLabel: 'ALUMINIUM',
+
+        // Advanced toggle button
+        advancedToggleBtn:     '▶ Zaawansowane: podaj podział zewnętrzny/wewnętrzny',
+        advancedToggleBtnOpen: '▼ Zaawansowane: podaj podział zewnętrzny/wewnętrzny',
     }
 };
 

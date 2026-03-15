@@ -347,9 +347,9 @@ function renderResults(allLocks, cfg, telem) {
         // The HTML template has a hardcoded generic message now, so we can override it if filters were active
         if (active) emptyDetail.textContent = `The parameters [ ${active} ] yielded 0 results.`;
         setStatus('error', '● ZERO TARGETS', 'No locks match your specification — adjust parameters above.');
-        statusCount.textContent = '';
-        footerCount.textContent = '0 TARGETS';
-        currentRenderedData = []; // Clear export data
+        statusCount.textContent = t('zeroTargetCount');
+        footerCount.textContent = t('zeroTargetCount');
+        currentRenderedData = [];
     } else {
         emptyState.hidden = true;
         const sortVal = sortSelect.value;
@@ -364,11 +364,12 @@ function renderResults(allLocks, cfg, telem) {
         });
         currentRenderedData = sorted; // Cache current view for Export
         sorted.forEach(lock => lockGrid.appendChild(buildLockCard(lock)));
-        const fromTotal = allLocks.length !== filtered.length ? ` (${allLocks.length - filtered.length} filtered out)` : '';
-        setStatus('success', '● EXTRACTION COMPLETE', `${filtered.length} target(s) acquired${fromTotal} — ${telem ? `${telem.successTargets}/5 sources scanned` : 'from cache'}`);
-        statusCount.textContent = `[${filtered.length} TARGETS]`;
-        footerCount.textContent = `${filtered.length} COMPLIANT LOCK(S)`;
-        btnExport.disabled = false; // Enable export now that targets are rendered
+        const fromTotal = allLocks.length !== filtered.length ? allLocks.length - filtered.length : null;
+        const srcStr = telem ? t('sourcesScanned')(telem.successTargets, 5) : t('fromCache');
+        setStatus('success', t('extractComplete'), t('targetsAcquired')(filtered.length, fromTotal, srcStr));
+        statusCount.textContent = t('targetCount')(filtered.length);
+        footerCount.textContent = t('compliantCount')(filtered.length);
+        btnExport.disabled = false;
     }
 
     if (telem) { telPanel.hidden = false; loadTelemetry(); }
@@ -404,7 +405,7 @@ function buildLockCard(lock) {
       </div>
       ${buildCompatibilityHtml(lock)}
       <div class="card-price ${lock.price_gbp === 'N/A' ? 'price-na' : ''}">
-        ${lock.price_gbp === 'N/A' ? 'Price: N/A' : `${esc(lock.price_gbp)}`}
+        ${lock.price_gbp === 'N/A' ? t('priceNA') : `${esc(lock.price_gbp)}`}
       </div>
       ${buildReviewsHtml(lock.reviews)}
       <div class="card-footer">${buildLinkHtml(lock.product_url, lock.manufacturer)}</div>
@@ -430,9 +431,9 @@ function buildCompatibilityHtml(lock) {
     const doors = lock.door_compatibility || [];
     const env = lock.environment;
     if (doors.length === 0 && !env) return '';
-    const doorIcons = { upvc: '🔷 UPVC', composite: '⬛ Composite', timber: '🌲 Timber', aluminium: '🔩 Aluminium' };
+    const doorIcons = { upvc: t('doorUpvc'), composite: t('doorComposite'), timber: t('doorTimber'), aluminium: t('doorAluminium') };
     let html = '<div class="card-compat">';
-    if (env && env !== 'any') html += `<span class="compat-badge compat-env">${env === 'external' ? '🏠 External' : '🚪 Internal'}</span>`;
+    if (env && env !== 'any') html += `<span class="compat-badge compat-env">${env === 'external' ? t('envExtBadge') : t('envIntBadge')}</span>`;
     doors.forEach(d => { html += `<span class="compat-badge">${doorIcons[d] ?? d}</span>`; });
     html += '</div>';
     return html;
@@ -441,8 +442,8 @@ function buildCompatibilityHtml(lock) {
 function buildCylinderSpecHtml(lock) {
     const parts = [];
     if (lock.cylinder_type && lock.cylinder_type !== 'N/A') {
-        const t = lock.cylinder_type.toLowerCase();
-        const label = t.includes('thumbturn') ? '🔄 THUMBTURN' : t.includes('double') ? '🔑🔑 D.EURO' : `🔑 ${lock.cylinder_type.toUpperCase()}`;
+        const ct = lock.cylinder_type.toLowerCase();
+        const label = ct.includes('thumbturn') ? t('badgeThumb') : ct.includes('double') ? t('badgeDouble') : `🔑 ${lock.cylinder_type.toUpperCase()}`;
         parts.push(`<span class="spec-badge spec-type">${label}</span>`);
     }
     if (lock.cylinder_sizes && lock.cylinder_sizes.length > 0) {
@@ -469,7 +470,7 @@ function buildAccreditationTags(accs) {
 }
 
 function buildReviewsHtml(reviews) {
-    if (!reviews) return `<div class="reviews-na">Reviews: N/A</div>`;
+    if (!reviews) return `<div class="reviews-na">${t('reviewsNA')}</div>`;
     const stars = '★'.repeat(Math.floor(reviews.score)) + (reviews.score % 1 >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.ceil(reviews.score));
     return `<div class="card-reviews">
       <span class="stars">${stars}</span>
@@ -479,8 +480,8 @@ function buildReviewsHtml(reviews) {
 }
 
 function buildLinkHtml(url, mfr) {
-    if (!url || url === 'N/A') return `<span class="card-link-na">Product URL unavailable</span>`;
-    return `<a class="card-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">⬡ VIEW TARGET →</a>`;
+    if (!url || url === 'N/A') return `<span class="card-link-na">${t('productUrlNA')}</span>`;
+    return `<a class="card-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${t('viewTarget')}</a>`;
 }
 
 function buildErrorCard(title, reason) {
@@ -512,23 +513,22 @@ async function loadTelemetry() {
     try {
         const snap = await getDocs(collection(db, 'telemetry_runs'));
         if (snap.empty) {
-            telData.textContent = 'Telemetry unavailable: No runs completed yet.';
+            telData.textContent = t('telUnavailable');
             return;
         }
         const runs = [];
         snap.forEach(doc => runs.push(doc.data()));
-        // Sort descending by timestamp
         runs.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
         telData.textContent = JSON.stringify(runs[0], null, 2);
     } catch (err) {
-        telData.textContent = 'Telemetry unavailable: ' + err.message;
+        telData.textContent = t('telError')(err.message);
     }
 }
 function toggleTelemetry() {
     const open = telToggle.getAttribute('aria-expanded') === 'true';
     telBody.hidden = open;
     telToggle.setAttribute('aria-expanded', String(!open));
-    telToggle.querySelector('.telemetry-title').textContent = open ? '▶ TELEMETRY // EXTRACTION LOG' : '▼ TELEMETRY // EXTRACTION LOG';
+    telToggle.querySelector('.telemetry-title').textContent = open ? t('telTitle') : t('telTitleOpen');
     if (!open) loadTelemetry();
 }
 
@@ -554,7 +554,7 @@ function openTargetModal(lock) {
     modalContent.hidden = false;
     modalContent.style.display = 'block';
 
-    modalBrand.innerHTML = `${esc(lock.manufacturer || '')} <span class="retailer-badge">✓ Verified Origin: ${esc(lock.manufacturer || 'Direct')}</span>`;
+    modalBrand.innerHTML = `${esc(lock.manufacturer || '')} <span class="retailer-badge">${t('verifiedOrigin')(esc(lock.manufacturer || 'Direct'))}</span>`;
     modalTitle.textContent = lock.model_name || 'UNKNOWN ASSET';
     modalTitle.setAttribute('data-text', modalTitle.textContent);
 
@@ -581,26 +581,26 @@ function openTargetModal(lock) {
         modalImage.src = lock.lock_image;  // starts loading immediately
     }
 
-    modalPrice.innerHTML = lock.price_gbp === 'N/A' ? 'PRICE: N/A' : `${lock.price_gbp}`;
-    modalCerts.innerHTML = buildAccreditationTags(lock.security_accreditations) || '<span class="accreditation-tag">NO ACCREDITATIONS</span>';
+    modalPrice.innerHTML = lock.price_gbp === 'N/A' ? t('priceModalNA') : `${lock.price_gbp}`;
+    modalCerts.innerHTML = buildAccreditationTags(lock.security_accreditations) || `<span class="accreditation-tag">${t('noAccreditations')}</span>`;
 
     const attackVectors = lock.anti_attack || [];
     const vectorMap = [
-        { id: 'anti-snap', icon: '✂', label: 'Anti-Snap' },
-        { id: 'anti-bump', icon: '🔨', label: 'Anti-Bump' },
-        { id: 'anti-drill', icon: '🔧', label: 'Anti-Drill' },
-        { id: 'anti-pick', icon: '🗝', label: 'Anti-Pick' },
-        { id: 'anti-extract', icon: '🔒', label: 'Anti-Extract' }
+        { id: 'anti-snap',    icon: '✂',  labelKey: 'vecAntiSnap'    },
+        { id: 'anti-bump',    icon: '🔨', labelKey: 'vecAntiBump'    },
+        { id: 'anti-drill',   icon: '🔧', labelKey: 'vecAntiDrill'   },
+        { id: 'anti-pick',    icon: '🗝', labelKey: 'vecAntiPick'    },
+        { id: 'anti-extract', icon: '🔒', labelKey: 'vecAntiExtract' }
     ];
 
     const vectorsEl = document.querySelector('.modal-vectors');
     if (vectorsEl) {
         vectorsEl.innerHTML = vectorMap.map(v => {
             const hasIt = attackVectors.includes(v.id);
-            const statusStr = hasIt ? 'VERIFIED' : 'VULNERABLE';
+            const statusStr = hasIt ? t('vecVerified') : t('vecVulnerable');
             const colorClass = hasIt ? 'var(--green)' : 'var(--red)';
             const textClass = hasIt ? 'glitch-text' : '';
-            return `<li class="vector-item"><span class="vector-icon">${v.icon}</span> ${v.label} <span class="vector-status ${textClass}" data-text="${statusStr}" style="color:${colorClass}">${statusStr}</span></li>`;
+            return `<li class="vector-item"><span class="vector-icon">${v.icon}</span> ${t(v.labelKey)} <span class="vector-status ${textClass}" data-text="${statusStr}" style="color:${colorClass}">${statusStr}</span></li>`;
         }).join('');
     }
 

@@ -18,3 +18,18 @@ db_test_log.txt
 config-clean.txt
 live_index.html
 old_index*.js
+
+# InsForge & AI agent skills
+.insforge
+.agent
+.agents
+.augment
+.claude
+.cline
+.github/copilot*
+.kilocode
+.qoder
+.qwen
+.roo
+.trae
+.windsurf

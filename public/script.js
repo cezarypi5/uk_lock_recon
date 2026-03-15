@@ -528,78 +528,73 @@ function esc(s) {
 
 // ── Target Detail Modal Logic ─────────────────────────────────────────────────
 function openTargetModal(lock) {
+    // ── v1.7.5: No artificial delay — show content instantly ──────────────────
     targetModal.hidden = false;
-    modalDecrypting.hidden = false;
-    modalContent.hidden = true;
+    modalDecrypting.hidden = true;   // skip spinner entirely
+    modalContent.hidden = false;     // show content immediately
 
-    // Scan effect delay
-    setTimeout(() => {
-        modalDecrypting.hidden = true;
-        modalContent.hidden = false;
+    modalBrand.innerHTML = `${esc(lock.manufacturer || '')} <span class="retailer-badge">✓ Verified Origin: ${esc(lock.manufacturer || 'Direct')}</span>`;
+    modalTitle.textContent = lock.model_name || 'UNKNOWN ASSET';
+    modalTitle.setAttribute('data-text', modalTitle.textContent);
 
-        modalBrand.innerHTML = `${esc(lock.manufacturer || '')} <span class="retailer-badge">✓ Verified Origin: ${esc(lock.manufacturer || 'Direct')}</span>`;
-        modalTitle.textContent = lock.model_name || 'UNKNOWN ASSET';
-        modalTitle.setAttribute('data-text', modalTitle.textContent);
+    // ── Image: preload starts immediately on click, 3s hard timeout ───────────
+    if (!lock.lock_image || lock.lock_image === 'N/A') {
+        modalImage.parentElement.style.display = 'none';
+    } else {
+        modalImage.parentElement.style.display = 'flex';
+        modalImage.alt = lock.model_name;
+        modalImage.style.display = 'block';
+        if (modalImage.nextElementSibling) modalImage.nextElementSibling.style.display = 'none';
 
-        // ── Fix: image with 3s hard timeout → show placeholder if slow ──
-        if (!lock.lock_image || lock.lock_image === 'N/A') {
-            modalImage.parentElement.style.display = 'none';
-        } else {
-            modalImage.parentElement.style.display = 'flex';
-            modalImage.alt = lock.model_name;
-            modalImage.style.display = 'block';
-            if (modalImage.nextElementSibling) modalImage.nextElementSibling.style.display = 'none';
-
-            let imgResolved = false;
-            const imgTimeout = setTimeout(() => {
-                if (!imgResolved) {
-                    imgResolved = true;
-                    modalImage.style.display = 'none';
-                    if (modalImage.nextElementSibling) modalImage.nextElementSibling.style.display = 'flex';
-                }
-            }, 3000);
-
-            modalImage.onload = () => { imgResolved = true; clearTimeout(imgTimeout); };
-            modalImage.onerror = () => { imgResolved = true; clearTimeout(imgTimeout); };
-            modalImage.src = lock.lock_image;
-        }
-
-        modalPrice.innerHTML = lock.price_gbp === 'N/A' ? 'PRICE: N/A' : `${lock.price_gbp}`;
-        modalCerts.innerHTML = buildAccreditationTags(lock.security_accreditations) || '<span class="accreditation-tag">NO ACCREDITATIONS</span>';
-
-        const attackVectors = lock.anti_attack || [];
-        const vectorMap = [
-            { id: 'anti-snap', icon: '✂', label: 'Anti-Snap' },
-            { id: 'anti-bump', icon: '🔨', label: 'Anti-Bump' },
-            { id: 'anti-drill', icon: '🔧', label: 'Anti-Drill' },
-            { id: 'anti-pick', icon: '🗝', label: 'Anti-Pick' },
-            { id: 'anti-extract', icon: '🔒', label: 'Anti-Extract' }
-        ];
-
-        const vectorsEl = document.querySelector('.modal-vectors');
-        if (vectorsEl) {
-            vectorsEl.innerHTML = vectorMap.map(v => {
-                const hasIt = attackVectors.includes(v.id);
-                const statusStr = hasIt ? 'VERIFIED' : 'VULNERABLE';
-                const colorClass = hasIt ? 'var(--green)' : 'var(--red)';
-                const textClass = hasIt ? 'glitch-text' : '';
-                return `<li class="vector-item"><span class="vector-icon">${v.icon}</span> ${v.label} <span class="vector-status ${textClass}" data-text="${statusStr}" style="color:${colorClass}">${statusStr}</span></li>`;
-            }).join('');
-        }
-
-        // ── Fix: direct link only, no preflight fetch (was causing 3-min delay) ──
-        if (!lock.product_url || lock.product_url === 'N/A') {
-            modalActionBtn.style.display = 'none';
-        } else {
-            let purchaseUrl = lock.product_url;
-            if (purchaseUrl && !purchaseUrl.startsWith('http://') && !purchaseUrl.startsWith('https://')) {
-                purchaseUrl = 'https://' + purchaseUrl;
+        let imgResolved = false;
+        const imgTimeout = setTimeout(() => {
+            if (!imgResolved) {
+                imgResolved = true;
+                modalImage.style.display = 'none';
+                if (modalImage.nextElementSibling) modalImage.nextElementSibling.style.display = 'flex';
             }
-            modalActionBtn.style.display = 'inline-flex';
-            modalActionBtn.href = purchaseUrl;
+        }, 3000);
+
+        modalImage.onload = () => { imgResolved = true; clearTimeout(imgTimeout); };
+        modalImage.onerror = () => { imgResolved = true; clearTimeout(imgTimeout); };
+        modalImage.src = lock.lock_image;  // starts loading immediately
+    }
+
+    modalPrice.innerHTML = lock.price_gbp === 'N/A' ? 'PRICE: N/A' : `${lock.price_gbp}`;
+    modalCerts.innerHTML = buildAccreditationTags(lock.security_accreditations) || '<span class="accreditation-tag">NO ACCREDITATIONS</span>';
+
+    const attackVectors = lock.anti_attack || [];
+    const vectorMap = [
+        { id: 'anti-snap', icon: '✂', label: 'Anti-Snap' },
+        { id: 'anti-bump', icon: '🔨', label: 'Anti-Bump' },
+        { id: 'anti-drill', icon: '🔧', label: 'Anti-Drill' },
+        { id: 'anti-pick', icon: '🗝', label: 'Anti-Pick' },
+        { id: 'anti-extract', icon: '🔒', label: 'Anti-Extract' }
+    ];
+
+    const vectorsEl = document.querySelector('.modal-vectors');
+    if (vectorsEl) {
+        vectorsEl.innerHTML = vectorMap.map(v => {
+            const hasIt = attackVectors.includes(v.id);
+            const statusStr = hasIt ? 'VERIFIED' : 'VULNERABLE';
+            const colorClass = hasIt ? 'var(--green)' : 'var(--red)';
+            const textClass = hasIt ? 'glitch-text' : '';
+            return `<li class="vector-item"><span class="vector-icon">${v.icon}</span> ${v.label} <span class="vector-status ${textClass}" data-text="${statusStr}" style="color:${colorClass}">${statusStr}</span></li>`;
+        }).join('');
+    }
+
+    // ── Direct link only — no preflight fetch ─────────────────────────────────
+    if (!lock.product_url || lock.product_url === 'N/A') {
+        modalActionBtn.style.display = 'none';
+    } else {
+        let purchaseUrl = lock.product_url;
+        if (purchaseUrl && !purchaseUrl.startsWith('http://') && !purchaseUrl.startsWith('https://')) {
+            purchaseUrl = 'https://' + purchaseUrl;
         }
-    }, 800);
-}
+        modalActionBtn.style.display = 'inline-flex';
+        modalActionBtn.href = purchaseUrl;
+    }
+}   // ← end openTargetModal
 
 modalClose.addEventListener('click', () => { targetModal.hidden = true; });
 targetModal.addEventListener('click', (e) => {

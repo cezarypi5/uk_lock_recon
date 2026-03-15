@@ -143,7 +143,14 @@ The entire deployment process MUST operate on full autopilot:
 1. **Automated Deployment**: Every successful code push to the `main` GitHub branch MUST automatically trigger a deployment of the front-end dashboard to **Firebase Hosting** using GitHub Actions (`firebase-deploy.yml`).
 2. **Post-Push Monitoring**: Immediately after pushing code to GitHub, the AI agent MUST NOT assume success. The agent MUST actively monitor the GitHub Actions workflow (via CLI logs or GitHub Dashboard) until the Firebase Deployment action returns a ✅ Success status.
 3. **Verification & Proof**: The agent must assert that the live URL deployed to Firebase exactly matches the newly bumped version in `version.txt`.
-4. **Test Report**: Upon successful deployment, the agent MUST generate a `walkthrough.md` test report including ALL of the mandatory visual evidence listed in Section 7.8.
+4. **⚠️ MANDATORY TEST REPORT — Every Deployment, No Exceptions:**  
+   After EVERY successful Firebase deployment (including patch releases, bug fixes, and data patches), the AI MUST:
+   1. **Capture GitHub Actions screenshot** — showing the commit SHA, workflow name, ✅ Success status, and duration.
+   2. **Capture live site footer screenshot** — confirming the deployed version matches `version.txt`.
+   3. **Capture the specific UI change** — at minimum one screenshot directly proving the change works (e.g., fixed filter result, correct image, button position).
+   4. **Append to `walkthrough.md`** — add a dated section with: version number, timestamp, changed files table, "User Request Verification" row, and all embedded screenshots using `file:///` URIs.
+   5. **Never skip this step** — if the AI fails to produce a test report after a deployment, the deployment is considered **incomplete** and must be re-done with proper documentation.
+
 
 ---
 

@@ -269,16 +269,27 @@ async function initiateScan() {
     isScanning = true;
 
     const cfg = getConfig();
-    showScanOverlay('Establishing secure uplink to Firestore database…');
-    setStatus('running', '● UPSTREAM SYNC', `Downloading hardware intelligence…`);
     splashState.hidden = true;
     emptyState.hidden = true;
     missionParams.classList.add('params-scanning');
     btnScan.disabled = true;
-    btnExport.disabled = true; // Disable export during scan
-    showSkeletons(5);
+    btnExport.disabled = true;
 
-    const loadStart = performance.now(); // Define loadStart here
+    // ── v1.7.8: Serve from warm cache instantly if backgroundPrefetch() already ran ──
+    if (allLocksCache.length > 0) {
+        console.log(`[Scan] Cache hit — rendering ${allLocksCache.length} locks instantly`);
+        renderResults(allLocksCache, cfg, true);
+        showToast('Database Synchronized', 'success');
+        isScanning = false;
+        btnScan.disabled = false;
+        missionParams.classList.remove('params-scanning');
+        return;
+    }
+
+    // Cache was cold (e.g. backgroundPrefetch still in flight or failed) — fetch now
+    showScanOverlay('Establishing secure uplink to Firestore database…');
+    setStatus('running', '● UPSTREAM SYNC', `Downloading hardware intelligence…`);
+    showSkeletons(5);
 
     try {
         // ── Firestore timeout guard: 10s max wait ──────────────────────────
@@ -295,13 +306,7 @@ async function initiateScan() {
         });
 
         allLocksCache = locks;
-
-        // Pass a dummy true flag for telemetry existence to ensure it renders the UI button
         renderResults(allLocksCache, cfg, true);
-
-        // Track latency for diagnostics (server-side only)
-        const loadEnd = performance.now();
-
         showToast('Database Synchronized', 'success');
     } catch (err) {
         lockGrid.innerHTML = '';
@@ -528,10 +533,13 @@ function esc(s) {
 
 // ── Target Detail Modal Logic ─────────────────────────────────────────────────
 function openTargetModal(lock) {
-    // ── v1.7.5: No artificial delay — show content instantly ──────────────────
+    // ── v1.7.8: Force spinner off with inline style — overrides any CSS animation
+    //           that might re-show the element despite the `hidden` attribute.
     targetModal.hidden = false;
-    modalDecrypting.hidden = true;   // skip spinner entirely
-    modalContent.hidden = false;     // show content immediately
+    modalDecrypting.hidden = true;
+    modalDecrypting.style.display = 'none';  // ← hard override: CSS animation cannot undo this
+    modalContent.hidden = false;
+    modalContent.style.display = 'block';
 
     modalBrand.innerHTML = `${esc(lock.manufacturer || '')} <span class="retailer-badge">✓ Verified Origin: ${esc(lock.manufacturer || 'Direct')}</span>`;
     modalTitle.textContent = lock.model_name || 'UNKNOWN ASSET';
@@ -686,12 +694,7 @@ if (keywordSearch) {
 if (btnExport) {
     btnExport.addEventListener('click', generateDossier);
 }
-sortSelect.addEventListener('change', () => {
-    if (allLocksCache.length > 0) {
-        renderResults(allLocksCache, getConfig(), null);
-        showToast('Mission Parameters Applied', 'info', 2000);
-    }
-});
+// NOTE: sortSelect listener already registered at line 676-679. Duplicate removed in v1.7.8.
 telToggle.addEventListener('click', toggleTelemetry);
 telToggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') toggleTelemetry(); });
 
@@ -724,6 +727,25 @@ async function fetchLatestSync() {
 
 // Initialize sync time on page load
 if (dbSyncReadout) fetchLatestSync();
+
+// ── v1.7.8: Background pre-fetch — start loading locks immediately on page load ──
+// By the time the user reads the UI and clicks FIND LOCKS (typically 5-30s),
+// allLocksCache is already populated → render is instant, no network wait.
+async function backgroundPrefetch() {
+    try {
+        const snap = await getDocs(collection(db, 'locks'));
+        const locks = [];
+        snap.forEach(doc => locks.push(doc.data()));
+        if (locks.length > 0) {
+            allLocksCache = locks;
+            console.log(`[Prefetch] ✅ Warmed cache with ${locks.length} locks`);
+        }
+    } catch (err) {
+        // Silently fail — user will trigger initiateScan() manually which has its own error handling
+        console.info('[Prefetch] Cache warm-up skipped (will fetch on demand):', err.message);
+    }
+}
+backgroundPrefetch();
 
 // ── Toast Notifications ───────────────────────────────────────────────────────
 function showToast(message, type = 'info', duration = 3000) {

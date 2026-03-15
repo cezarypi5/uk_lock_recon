@@ -61,8 +61,8 @@
         <div class="scan-radar-sweep"></div>
         <div class="scan-lock-icon">🔒</div>
       </div>
-      <div class="scan-label">TARGET ACQUISITION IN PROGRESS</div>
-      <div class="scan-sublabel" id="scan-overlay-detail">Scanning UK manufacturer databases…</div>
+      <div class="scan-label" data-i18n="scanLabel">TARGET ACQUISITION IN PROGRESS</div>
+      <div class="scan-sublabel" id="scan-overlay-detail" data-i18n="scanSublabel">Scanning UK manufacturer databases…</div>
 
       <div class="scan-dots">
         <span class="scan-dot"></span>
@@ -77,11 +77,23 @@
   <!-- Header -->
   <header class="site-header">
     <div class="header-inner">
-      <div class="header-badge">CLASSIFIED</div>
-      <h1 class="site-title glitch-text" data-text="UK RESIDENTIAL HARDENING">UK RESIDENTIAL HARDENING</h1>
+      <!-- ── Language switcher ── -->
+      <div class="lang-switcher" id="lang-switcher" aria-label="Language selector">
+        <button class="lang-btn lang-active" data-lang="en" aria-label="Switch to English" title="English">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-name">EN</span>
+        </button>
+        <button class="lang-btn" data-lang="pl" aria-label="Przełącz na Polski" title="Polski">
+          <span class="lang-flag">🇵🇱</span>
+          <span class="lang-name">PL</span>
+        </button>
+      </div>
+
+      <div class="header-badge" data-i18n="headerBadge">CLASSIFIED</div>
+      <h1 class="site-title glitch-text" data-text="UK RESIDENTIAL HARDENING" data-i18n="siteTitle">UK RESIDENTIAL HARDENING</h1>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <p class="site-subtitle" style="margin-bottom: 0;">// SUPER AGENT LOCK FINDER — LIVE INTELLIGENCE SYSTEM</p>
-        <span id="db-sync-readout" class="db-sync-readout">// DB SYNC: CALCULATING...</span>
+        <p class="site-subtitle" style="margin-bottom: 0;" data-i18n="siteSubtitle">// SUPER AGENT LOCK FINDER — LIVE INTELLIGENCE SYSTEM</p>
+        <span id="db-sync-readout" class="db-sync-readout" data-i18n="dbSyncCalc">// DB SYNC: CALCULATING...</span>
       </div>
 
   </header>
@@ -91,62 +103,63 @@
        ═══════════════════════════════════════════════════════ -->
   <section class="mission-params" id="mission-params" aria-label="Mission parameters">
     <div class="params-inner">
-      <h2 class="params-title">⬡ MISSION PARAMETERS // FULL LOCK SPECIFICATION</h2>
+      <h2 class="params-title" data-i18n="paramsTitle">⬡ MISSION PARAMETERS // FULL LOCK SPECIFICATION</h2>
 
       <div class="params-grid">
 
         <!-- ── 0. Keyword Target ──────────────────────────────── -->
         <div class="param-group param-full">
-          <div class="param-label">🎯 TEXT SEARCH / MANUFACTURER</div>
-          <p class="param-hint">Filter by specific brand (e.g., 'Yale', 'Ultion') or model name.</p>
+          <div class="param-label" data-i18n="keywordLabel">🎯 TEXT SEARCH / MANUFACTURER</div>
+          <p class="param-hint" data-i18n="keywordHint">Filter by specific brand (e.g., 'Yale', 'Ultion') or model name.</p>
           <input type="text" id="keyword-search" class="search-input"
             placeholder="Enter target keyword (e.g. Abloy Protec2)..." autocomplete="off"
+            data-i18n="keywordPlaceholder"
             style="width: 100%; padding: 0.8rem; background: rgba(0,243,255,0.05); border: 1px solid var(--neon-cyan); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; outline: none; margin-top: 0.5rem;" />
         </div>
 
         <!-- ── 1. Security Tier ──────────────────────────────── -->
         <div class="param-group param-full">
-          <div class="param-label">🛡 SECURITY TIER</div>
-          <p class="param-hint">From insurance-grade to military-class. Higher tiers require more accreditations.</p>
+          <div class="param-label" data-i18n="tierLabel">🛡 SECURITY TIER</div>
+          <p class="param-hint" data-i18n="tierHint">From insurance-grade to military-class. Higher tiers require more accreditations.</p>
           <div class="tier-options" role="radiogroup" aria-label="Security tier">
             <label class="tier-option">
               <input type="radio" name="security-tier" value="any" checked />
               <span class="tier-card tier-any">
                 <span class="tier-icon">⬡</span>
-                <span class="tier-name">ANY TIER</span>
-                <span class="tier-desc">All security levels</span>
+                <span class="tier-name" data-i18n="tierAnyName">ANY TIER</span>
+                <span class="tier-desc" data-i18n="tierAnyDesc">All security levels</span>
               </span>
             </label>
             <label class="tier-option">
               <input type="radio" name="security-tier" value="basic" />
               <span class="tier-card tier-basic">
                 <span class="tier-icon">⬡</span>
-                <span class="tier-name">BASIC</span>
-                <span class="tier-desc">BS3621 insurance approved</span>
+                <span class="tier-name" data-i18n="tierBasicName">BASIC</span>
+                <span class="tier-desc" data-i18n="tierBasicDesc">BS3621 insurance approved</span>
               </span>
             </label>
             <label class="tier-option">
               <input type="radio" name="security-tier" value="high" />
               <span class="tier-card tier-high">
                 <span class="tier-icon">⬡⬡</span>
-                <span class="tier-name">HIGH</span>
-                <span class="tier-desc">TS007 3-Star certified</span>
+                <span class="tier-name" data-i18n="tierHighName">HIGH</span>
+                <span class="tier-desc" data-i18n="tierHighDesc">TS007 3-Star certified</span>
               </span>
             </label>
             <label class="tier-option">
               <input type="radio" name="security-tier" value="elite" />
               <span class="tier-card tier-elite">
                 <span class="tier-icon">⬡⬡⬡</span>
-                <span class="tier-name">ELITE</span>
-                <span class="tier-desc">TS007 + SS312 Diamond</span>
+                <span class="tier-name" data-i18n="tierEliteName">ELITE</span>
+                <span class="tier-desc" data-i18n="tierEliteDesc">TS007 + SS312 Diamond</span>
               </span>
             </label>
             <label class="tier-option">
               <input type="radio" name="security-tier" value="top-notch" />
               <span class="tier-card tier-topnotch">
                 <span class="tier-icon">★</span>
-                <span class="tier-name">TOP NOTCH</span>
-                <span class="tier-desc">All certs + full attack protection</span>
+                <span class="tier-name" data-i18n="tierTopName">TOP NOTCH</span>
+                <span class="tier-desc" data-i18n="tierTopDesc">All certs + full attack protection</span>
               </span>
             </label>
           </div>
@@ -154,11 +167,10 @@
 
         <!-- ── 2. Budget Range ───────────────────────────────── -->
         <div class="param-group">
-          <div class="param-label">💷 BUDGET RANGE</div>
-          <p class="param-hint">Filter by price bracket.</p>
+          <div class="param-label" data-i18n="budgetLabel">💷 BUDGET RANGE</div>
+          <p class="param-hint" data-i18n="budgetHint">Filter by price bracket.</p>
           <div class="budget-options" role="radiogroup" aria-label="Budget range">
-            <label class="budget-pill"><input type="radio" name="budget" value="any" checked /><span>Any
-                Budget</span></label>
+            <label class="budget-pill"><input type="radio" name="budget" value="any" checked /><span data-i18n="budgetAny">Any Budget</span></label>
             <label class="budget-pill"><input type="radio" name="budget" value="under40" /><span>Under
                 £40</span></label>
             <label class="budget-pill"><input type="radio" name="budget" value="40-70" /><span>£40–£70</span></label>
@@ -169,30 +181,30 @@
 
         <!-- ── 3. Environment ────────────────────────────────── -->
         <div class="param-group">
-          <div class="param-label">🏠 ENVIRONMENT</div>
-          <p class="param-hint">Where the lock will be installed.</p>
+          <div class="param-label" data-i18n="envLabel">🏠 ENVIRONMENT</div>
+          <p class="param-hint" data-i18n="envHint">Where the lock will be installed.</p>
           <div class="env-options" role="radiogroup" aria-label="Environment">
             <label class="env-option">
               <input type="radio" name="environment" value="any" checked />
               <span class="env-card">
                 <span class="env-icon">⬡</span>
-                <span class="env-name">ANY</span>
+                <span class="env-name" data-i18n="envAny">ANY</span>
               </span>
             </label>
             <label class="env-option">
               <input type="radio" name="environment" value="external" />
               <span class="env-card">
                 <span class="env-icon">🏠</span>
-                <span class="env-name">EXTERNAL</span>
-                <span class="env-desc">Front / back door</span>
+                <span class="env-name" data-i18n="envExtName">EXTERNAL</span>
+                <span class="env-desc" data-i18n="envExtDesc">Front / back door</span>
               </span>
             </label>
             <label class="env-option">
               <input type="radio" name="environment" value="internal" />
               <span class="env-card">
                 <span class="env-icon">🚪</span>
-                <span class="env-name">INTERNAL</span>
-                <span class="env-desc">Bedroom / bathroom</span>
+                <span class="env-name" data-i18n="envIntName">INTERNAL</span>
+                <span class="env-desc" data-i18n="envIntDesc">Bedroom / bathroom</span>
               </span>
             </label>
           </div>
@@ -200,8 +212,8 @@
 
         <!-- ── 4. Door Material ──────────────────────────────── -->
         <div class="param-group">
-          <div class="param-label">🚪 DOOR MATERIAL</div>
-          <p class="param-hint">Filter by door type compatibility.</p>
+          <div class="param-label" data-i18n="doorLabel">🚪 DOOR MATERIAL</div>
+          <p class="param-hint" data-i18n="doorHint">Filter by door type compatibility.</p>
           <div class="door-options" role="radiogroup" aria-label="Door material">
             <label class="door-option"><input type="radio" name="door-type" value="any" checked /><span
                 class="door-card"><span class="door-icon">⬡</span><span>ANY</span></span></label>
@@ -218,47 +230,47 @@
 
         <!-- ── 5. Anti-Attack Features ───────────────────────── -->
         <div class="param-group param-full">
-          <div class="param-label">⚔ REQUIRED ATTACK PROTECTION</div>
-          <p class="param-hint">Select features the lock MUST have (AND logic — all selected must be present).</p>
+          <div class="param-label" data-i18n="attackLabel">⚔ REQUIRED ATTACK PROTECTION</div>
+          <p class="param-hint" data-i18n="attackHint">Select features the lock MUST have (AND logic — all selected must be present).</p>
           <div class="attack-options" role="group" aria-label="Anti-attack features">
             <label class="attack-toggle">
               <input type="checkbox" name="attack" value="anti-snap" />
               <span class="attack-card">
                 <span class="attack-icon">✂</span>
-                <span class="attack-name">ANTI-SNAP</span>
-                <span class="attack-desc">Resist cylinder snap attacks</span>
+                <span class="attack-name" data-i18n="attackSnapName">ANTI-SNAP</span>
+                <span class="attack-desc" data-i18n="attackSnapDesc">Resist cylinder snap attacks</span>
               </span>
             </label>
             <label class="attack-toggle">
               <input type="checkbox" name="attack" value="anti-bump" />
               <span class="attack-card">
                 <span class="attack-icon">🔨</span>
-                <span class="attack-name">ANTI-BUMP</span>
-                <span class="attack-desc">Resist bump key attacks</span>
+                <span class="attack-name" data-i18n="attackBumpName">ANTI-BUMP</span>
+                <span class="attack-desc" data-i18n="attackBumpDesc">Resist bump key attacks</span>
               </span>
             </label>
             <label class="attack-toggle">
               <input type="checkbox" name="attack" value="anti-drill" />
               <span class="attack-card">
                 <span class="attack-icon">🔧</span>
-                <span class="attack-name">ANTI-DRILL</span>
-                <span class="attack-desc">Hardened drill-resistant core</span>
+                <span class="attack-name" data-i18n="attackDrillName">ANTI-DRILL</span>
+                <span class="attack-desc" data-i18n="attackDrillDesc">Hardened drill-resistant core</span>
               </span>
             </label>
             <label class="attack-toggle">
               <input type="checkbox" name="attack" value="anti-pick" />
               <span class="attack-card">
                 <span class="attack-icon">🗝</span>
-                <span class="attack-name">ANTI-PICK</span>
-                <span class="attack-desc">High-security pin configuration</span>
+                <span class="attack-name" data-i18n="attackPickName">ANTI-PICK</span>
+                <span class="attack-desc" data-i18n="attackPickDesc">High-security pin configuration</span>
               </span>
             </label>
             <label class="attack-toggle">
               <input type="checkbox" name="attack" value="anti-extract" />
               <span class="attack-card">
                 <span class="attack-icon">🔒</span>
-                <span class="attack-name">ANTI-EXTRACT</span>
-                <span class="attack-desc">Key cannot be forcibly removed</span>
+                <span class="attack-name" data-i18n="attackExtractName">ANTI-EXTRACT</span>
+                <span class="attack-desc" data-i18n="attackExtractDesc">Key cannot be forcibly removed</span>
               </span>
             </label>
           </div>
@@ -266,14 +278,13 @@
 
         <!-- ── 6. Cylinder Size & Type ───────────────────────── -->
         <div class="param-group">
-          <div class="param-label">📏 CYLINDER SIZE (mm)</div>
-          <p class="param-hint">Enter total cylinder length — the end-to-end measurement of the barrel. Most standard
-            UPVC doors need <strong>70mm</strong>.</p>
+          <div class="param-label" data-i18n="cylinderSizeLabel">📏 CYLINDER SIZE (mm)</div>
+          <p class="param-hint" data-i18n-html="true" data-i18n="cylinderSizeHint">Enter total cylinder length — the end-to-end measurement of the barrel. Most standard UPVC doors need <strong>70mm</strong>.</p>
 
           <!-- SIMPLE: Total Length -->
           <div class="total-length-row">
             <div class="size-field">
-              <label for="size-total" class="size-label">TOTAL LENGTH</label>
+              <label for="size-total" class="size-label" data-i18n="totalLengthLabel">TOTAL LENGTH</label>
               <input type="number" id="size-total" class="size-input size-total" min="40" max="200" value="70" />
               <span class="size-unit">mm</span>
             </div>
@@ -282,46 +293,46 @@
           <table class="size-table" id="size-table" aria-label="Common cylinder sizes">
             <thead>
               <tr>
-                <th>Total Length</th>
-                <th>External / Internal split</th>
-                <th>Typical use</th>
+                <th data-i18n="sizeColTotal">Total Length</th>
+                <th data-i18n="sizeColSplit">External / Internal split</th>
+                <th data-i18n="sizeColUse">Typical use</th>
               </tr>
             </thead>
             <tbody>
               <tr class="size-row active" data-total="70" tabindex="0">
                 <td class="size-row-total">70mm</td>
                 <td class="size-row-split">35/35</td>
-                <td class="size-row-desc">Standard UPVC door</td>
+                <td class="size-row-desc" data-i18n="size70desc">Standard UPVC door</td>
               </tr>
               <tr class="size-row" data-total="75" tabindex="0">
                 <td class="size-row-total">75mm</td>
                 <td class="size-row-split">35/40 or 40/35</td>
-                <td class="size-row-desc">Slightly offset UPVC</td>
+                <td class="size-row-desc" data-i18n="size75desc">Slightly offset UPVC</td>
               </tr>
               <tr class="size-row" data-total="80" tabindex="0">
                 <td class="size-row-total">80mm</td>
                 <td class="size-row-split">35/45 or 40/40</td>
-                <td class="size-row-desc">Composite / timber</td>
+                <td class="size-row-desc" data-i18n="size80desc">Composite / timber</td>
               </tr>
               <tr class="size-row" data-total="85" tabindex="0">
                 <td class="size-row-total">85mm</td>
                 <td class="size-row-split">40/45</td>
-                <td class="size-row-desc">Thicker composite</td>
+                <td class="size-row-desc" data-i18n="size85desc">Thicker composite</td>
               </tr>
               <tr class="size-row" data-total="90" tabindex="0">
                 <td class="size-row-total">90mm</td>
                 <td class="size-row-split">45/45</td>
-                <td class="size-row-desc">Heavy duty timber</td>
+                <td class="size-row-desc" data-i18n="size90desc">Heavy duty timber</td>
               </tr>
               <tr class="size-row" data-total="100" tabindex="0">
                 <td class="size-row-total">100mm</td>
                 <td class="size-row-split">35/65 or 40/60</td>
-                <td class="size-row-desc">Long-throw / multipoint</td>
+                <td class="size-row-desc" data-i18n="size100desc">Long-throw / multipoint</td>
               </tr>
               <tr class="size-row" data-total="110" tabindex="0">
                 <td class="size-row-total">110mm</td>
                 <td class="size-row-split">35/75 or 45/65</td>
-                <td class="size-row-desc">Extra-long or commercial</td>
+                <td class="size-row-desc" data-i18n="size110desc">Extra-long or commercial</td>
               </tr>
             </tbody>
           </table>
@@ -331,23 +342,22 @@
             ▶ Advanced: specify external/internal split
           </button>
           <div class="advanced-split" id="advanced-split" hidden>
-            <p class="param-hint" style="margin-top:6px">E.g. 35/35 = 35mm key-side + 35mm inside (70mm total). Used by
-              locksmiths.</p>
+            <p class="param-hint" style="margin-top:6px" data-i18n="advancedHint">E.g. 35/35 = 35mm key-side + 35mm inside (70mm total). Used by locksmiths.</p>
             <div class="size-inputs">
               <div class="size-field">
-                <label for="size-external" class="size-label">EXTERNAL (key side)</label>
+                <label for="size-external" class="size-label" data-i18n="externalLabel">EXTERNAL (key side)</label>
                 <input type="number" id="size-external" class="size-input" min="20" max="100" value="35" />
                 <span class="size-unit">mm</span>
               </div>
               <span class="size-divider">/</span>
               <div class="size-field">
-                <label for="size-internal" class="size-label">INTERNAL (inside)</label>
+                <label for="size-internal" class="size-label" data-i18n="internalLabel">INTERNAL (inside)</label>
                 <input type="number" id="size-internal" class="size-input" min="20" max="100" value="35" />
                 <span class="size-unit">mm</span>
               </div>
             </div>
             <div class="size-presets" style="margin-top:6px">
-              <span class="presets-label">SPLIT PRESETS:</span>
+              <span class="presets-label" data-i18n="splitPresets">SPLIT PRESETS:</span>
               <button class="preset-btn active" data-ext="35" data-int="35">35/35</button>
               <button class="preset-btn" data-ext="35" data-int="45">35/45</button>
               <button class="preset-btn" data-ext="40" data-int="40">40/40</button>
@@ -360,22 +370,22 @@
 
         <!-- ── 7. Cylinder Type ──────────────────────────────── -->
         <div class="param-group">
-          <div class="param-label">🔑 CYLINDER TYPE</div>
-          <p class="param-hint">Thumbturn = key outside only, lever inside.</p>
+          <div class="param-label" data-i18n="cylinderTypeLabel">🔑 CYLINDER TYPE</div>
+          <p class="param-hint" data-i18n="cylinderTypeHint">Thumbturn = key outside only, lever inside.</p>
           <div class="type-options" role="radiogroup">
             <label class="type-option">
               <input type="radio" name="cylinder-type" id="type-any" value="any" checked />
-              <span class="type-card"><span class="type-icon">🔑</span><span class="type-name">ANY TYPE</span></span>
+              <span class="type-card"><span class="type-icon">🔑</span><span class="type-name" data-i18n="typeAny">ANY TYPE</span></span>
             </label>
             <label class="type-option">
               <input type="radio" name="cylinder-type" id="type-double" value="double" />
-              <span class="type-card"><span class="type-icon">🔑🔑</span><span class="type-name">DOUBLE EURO</span><span
-                  class="type-desc">Key / Key</span></span>
+              <span class="type-card"><span class="type-icon">🔑🔑</span><span class="type-name" data-i18n="typeDouble">DOUBLE EURO</span><span
+                  class="type-desc" data-i18n="typeDoubleDesc">Key / Key</span></span>
             </label>
             <label class="type-option">
               <input type="radio" name="cylinder-type" id="type-thumbturn" value="thumbturn" />
-              <span class="type-card"><span class="type-icon">🔑🔄</span><span class="type-name">THUMBTURN</span><span
-                  class="type-desc">Key / Thumb-lever</span></span>
+              <span class="type-card"><span class="type-icon">🔑🔄</span><span class="type-name" data-i18n="typeThumb">THUMBTURN</span><span
+                  class="type-desc" data-i18n="typeThumbDesc">Key / Thumb-lever</span></span>
             </label>
           </div>
         </div>
@@ -386,8 +396,8 @@
 
   <!-- Status Bar -->
   <div class="status-bar" id="status-bar">
-    <span class="status-indicator" id="status-indicator">● STANDBY</span>
-    <span class="status-detail" id="status-detail">Set mission parameters above, then initiate scan…</span>
+    <span class="status-indicator" id="status-indicator" data-i18n="standby">● STANDBY</span>
+    <span class="status-detail" id="status-detail" data-i18n="standbyDetail">Set mission parameters above, then initiate scan…</span>
     <span class="status-count" id="status-count"></span>
   </div>
 
@@ -395,26 +405,24 @@
   <main class="main-content" id="main-content">
     <div class="splash-state" id="splash-state">
       <div class="splash-icon">🔒</div>
-      <h2 class="splash-title">SUPER AGENT LOCK FINDER ONLINE</h2>
-      <p class="splash-text">Configure your mission parameters above, then press <strong>FIND LOCKS</strong>.<br />Live
-        intelligence from 17 UK manufacturers &amp; stockists — always fresh data.</p>
+      <h2 class="splash-title" data-i18n="splashTitle">SUPER AGENT LOCK FINDER ONLINE</h2>
+      <p class="splash-text" data-i18n="splashText" data-i18n-html="true">Configure your mission parameters above, then press <strong>FIND LOCKS</strong>.<br />Live intelligence from 17 UK manufacturers &amp; stockists — always fresh data.</p>
       <ul class="splash-specs">
-        <li>⬡ Security Tier — Basic → Top Notch</li>
-        <li>⬡ Budget Range — Under £40 to £100+</li>
-        <li>⬡ Anti-Attack — Snap / Bump / Drill / Pick / Extract</li>
-        <li>⬡ Environment — External / Internal</li>
-        <li>⬡ Door Material — UPVC / Composite / Timber / Aluminium</li>
-        <li>⬡ Cylinder — Size (mm) + Type</li>
+        <li data-i18n="splashTier">⬡ Security Tier — Basic → Top Notch</li>
+        <li data-i18n="splashBudget">⬡ Budget Range — Under £40 to £100+</li>
+        <li data-i18n="splashAttack">⬡ Anti-Attack — Snap / Bump / Drill / Pick / Extract</li>
+        <li data-i18n="splashEnv">⬡ Environment — External / Internal</li>
+        <li data-i18n="splashDoor">⬡ Door Material — UPVC / Composite / Timber / Aluminium</li>
+        <li data-i18n="splashCylinder">⬡ Cylinder — Size (mm) + Type</li>
       </ul>
     </div>
     <div class="lock-grid" id="lock-grid" aria-live="polite"></div>
     <div class="empty-state" id="empty-state" hidden>
       <div class="glitch-wrapper">
-        <div class="glitch-text-red" data-text="NO TARGETS ACQUIRED">NO TARGETS ACQUIRED</div>
+        <div class="glitch-text-red" data-text="NO TARGETS ACQUIRED" data-i18n="noTargets">NO TARGETS ACQUIRED</div>
       </div>
-      <p id="empty-detail" class="empty-desc">The specified mission parameters yielded 0 results.</p>
-      <button class="btn-ghost reset-empty-btn" onclick="document.getElementById('btn-reset').click()">[ RELAX FILTERS
-        ]</button>
+      <p id="empty-detail" class="empty-desc" data-i18n="noTargetsDesc">The specified mission parameters yielded 0 results.</p>
+      <button class="btn-ghost reset-empty-btn" onclick="document.getElementById('btn-reset').click()" data-i18n="relaxFilters">[ RELAX FILTERS ]</button>
     </div>
   </main>
 
@@ -455,12 +463,12 @@
           </div>
 
           <div class="modal-info-col">
-            <h3 class="modal-section-title">SECURITY CLEARANCE</h3>
+            <h3 class="modal-section-title" data-i18n="securityClearance">SECURITY CLEARANCE</h3>
             <div class="modal-badges" id="modal-certs">
               <!-- Certs injected here -->
             </div>
 
-            <h3 class="modal-section-title">ATTACK VECTOR RESISTANCE</h3>
+            <h3 class="modal-section-title" data-i18n="attackVectorRes">ATTACK VECTOR RESISTANCE</h3>
             <ul class="modal-vectors">
               <li class="vector-item"><span class="vector-icon">✂</span> Anti-Snap <span
                   class="vector-status">VERIFIED</span></li>
@@ -472,7 +480,7 @@
                   class="vector-status">VERIFIED</span></li>
             </ul>
 
-            <a href="#" target="_blank" class="btn-primary modal-action-btn" id="modal-action-btn">
+            <a href="#" target="_blank" class="btn-primary modal-action-btn" id="modal-action-btn" data-i18n="executePurchase">
               EXECUTE PURCHASE ⬈
             </a>
           </div>
@@ -484,19 +492,22 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-left">
-      <span class="footer-label">SECURED BY DESIGN</span>
-      <span class="footer-count" id="footer-compliant-count">— AWAITING DATA —</span>
+      <span class="footer-label" data-i18n="footerSbd">SECURED BY DESIGN</span>
+      <span class="footer-count" id="footer-compliant-count" data-i18n="footerAwait">— AWAITING DATA —</span>
     </div>
-    <span class="footer-version">UK SUPER AGENT LOCK FINDER v1.7.9 // CYBERCORE</span>
+    <span class="footer-version">UK SUPER AGENT LOCK FINDER v2.0.0 // CYBERCORE</span>
   </footer>
 
   <!-- Firebase Integration -->
   <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore-compat.js"></script>
-  <script src="firebaseConfig.js?v=1.7.9"></script>
+  <script src="firebaseConfig.js?v=2.0.0"></script>
+
+  <!-- i18n module — must load before script.js -->
+  <script type="module" src="i18n.js?v=2.0.0"></script>
 
   <!-- UI App Logic -->
-  <script type="module" src="script.js?v=1.7.9"></script>
+  <script type="module" src="script.js?v=2.0.0"></script>
 
   <!-- Toast Notifications Container -->
   <div id="toast-container" class="toast-container"></div>
@@ -504,16 +515,16 @@
   <!-- ── Floating Action Bar — always visible, fixed bottom-right ── -->
   <div class="floating-action-bar" id="floating-action-bar" role="toolbar" aria-label="Primary actions">
     <div class="sort-control fab-sort">
-      <label for="sort-select" class="sort-label">SORT:</label>
+      <label for="sort-select" class="sort-label" data-i18n="sortLabel">SORT:</label>
       <select id="sort-select" class="sort-select">
-        <option value="threat-desc">Threat Level (Highest First)</option>
-        <option value="price-asc">Price (Low to High)</option>
-        <option value="price-desc">Price (High to Low)</option>
+        <option value="threat-desc" data-i18n="sortThreat">Threat Level (Highest First)</option>
+        <option value="price-asc" data-i18n="sortPriceAsc">Price (Low to High)</option>
+        <option value="price-desc" data-i18n="sortPriceDesc">Price (High to Low)</option>
       </select>
     </div>
-    <button id="btn-scan" class="btn-primary" aria-label="Find Locks">⬡ FIND LOCKS</button>
-    <button id="btn-reset" class="btn-secondary" aria-label="Reset Filters">✕ RESET</button>
-    <button id="btn-export" class="btn-action" aria-label="Export Dossier" disabled>⭳ DOSSIER</button>
+    <button id="btn-scan" class="btn-primary" aria-label="Find Locks" data-i18n="btnScan">⬡ FIND LOCKS</button>
+    <button id="btn-reset" class="btn-secondary" aria-label="Reset Filters" data-i18n="btnReset">✕ RESET</button>
+    <button id="btn-export" class="btn-action" aria-label="Export Dossier" disabled data-i18n="btnExport">⭳ DOSSIER</button>
   </div>
 
 </body>

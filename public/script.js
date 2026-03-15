@@ -1,10 +1,23 @@
 import { db, collection, getDocs, query, orderBy, limit } from './firebaseConfig.js';
+import { setLang, currentLang, applyTranslations, updateLangSwitcher } from './i18n.js';
 
 /**
- * script.js — UK Super Agent Lock Finder v1.7.1
+ * script.js — UK Super Agent Lock Finder v2.0.0
  * 7-dimensional filtering: Security Tier, Budget, Environment, Door Type,
  * Anti-Attack Features, Cylinder Size, Cylinder Type.
+ * Bilingual: English / Polish via i18n.js
  */
+
+// ── Language Switcher ─────────────────────────────────────────────────────────
+document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        if (lang && lang !== currentLang()) setLang(lang);
+    });
+});
+// Apply translations on load (localStorage-persisted lang)
+applyTranslations();
+updateLangSwitcher();
 
 // ── DOM References ──────────────────────────────────────────────────────────
 const btnScan = document.getElementById('btn-scan');

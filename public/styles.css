@@ -171,27 +171,29 @@ body {
 .floating-action-bar {
   position: fixed;
   bottom: 1.5rem;
-  right: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 500;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(5, 5, 5, 0.92);
+  background: rgba(5, 5, 5, 0.95);
   border: 1px solid var(--cyan);
   border-radius: 8px;
-  padding: 8px 14px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding: 10px 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   box-shadow:
-    0 0 20px var(--cyan-glow),
-    0 4px 24px rgba(0, 0, 0, 0.75);
+    0 0 24px var(--cyan-glow),
+    0 4px 32px rgba(0, 0, 0, 0.85);
+  white-space: nowrap;
   transition: box-shadow 0.2s ease;
 }
 
 .floating-action-bar:hover {
   box-shadow:
-    0 0 30px var(--cyan-glow),
-    0 6px 32px rgba(0, 0, 0, 0.85);
+    0 0 36px var(--cyan-glow),
+    0 6px 40px rgba(0, 0, 0, 0.9);
 }
 
 .fab-sort {
@@ -200,11 +202,17 @@ body {
   gap: 6px;
 }
 
+/* Give the page enough bottom padding so content is never hidden behind the FAB */
+body {
+  padding-bottom: 80px;
+}
+
 @media (max-width: 600px) {
   .floating-action-bar {
     bottom: 0;
-    right: 0;
     left: 0;
+    right: 0;
+    transform: none;
     border-radius: 0;
     border-left: none;
     border-right: none;
@@ -216,7 +224,7 @@ body {
   }
 
   .fab-sort {
-    display: none; /* hide sort on mobile to save space — use default sort */
+    display: none;
   }
 }
 

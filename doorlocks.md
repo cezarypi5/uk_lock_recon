@@ -143,7 +143,7 @@ The entire deployment process MUST operate on full autopilot:
 1. **Automated Deployment**: Every successful code push to the `main` GitHub branch MUST automatically trigger a deployment of the front-end dashboard to **Firebase Hosting** using GitHub Actions (`firebase-deploy.yml`).
 2. **Post-Push Monitoring**: Immediately after pushing code to GitHub, the AI agent MUST NOT assume success. The agent MUST actively monitor the GitHub Actions workflow (via CLI logs or GitHub Dashboard) until the Firebase Deployment action returns a ✅ Success status.
 3. **Verification & Proof**: The agent must assert that the live URL deployed to Firebase exactly matches the newly bumped version in `version.txt`.
-4. **Test Report**: Upon successful deployment, the agent MUST generate a `walkthrough.md` test report detailing the changes, the new version number, and providing screenshot evidence of the live deployed UI changes using the `file:///` protocol.
+4. **Test Report**: Upon successful deployment, the agent MUST generate a `walkthrough.md` test report including ALL of the mandatory visual evidence listed in Section 7.8.
 
 ---
 
@@ -172,7 +172,7 @@ Before any final production Firebase deployment, the UI MUST be proven perfectly
 - Executing **500 sequential random toggles** across all Dropdowns, Radios, Text searches, and Checkboxes directly in the DOM.
 - The UI MUST sustain these 500 permutations with zero freezes, unhandled React/Vanilla JS exceptions, or memory limits reached.
 
-### 7.4 Console Telemetry & Logging
+### 7.5 Console Telemetry & Logging
 All events MUST be logged with ISO 8601 timestamps:
 - Scrape start / end per target
 - Gemini API call start / token count / latency
@@ -188,8 +188,52 @@ The run is considered fully successful when:
 - The 500 Live Permutations DOM test passes with 0 crashes.
 - Telemetry report generated and saved to `logs/last_run.json`
 
-### 7.7 Test Report Output
+### 7.7 Machine-Readable Log Output
 Upon completion, generate `logs/last_run.json` containing:
 - ISO 8601 timestamp of run
 - Per-target: URL, status, retry count, locks extracted, Gemini token usage
 - Overall: total tokens, total locks, compliance filter count, run duration (ms)
+
+### 7.8 MANDATORY VISUAL PROOF IN WALKTHROUGH.MD (NON-NEGOTIABLE)
+
+Every `walkthrough.md` test report MUST include the following visual evidence captured via the browser subagent. Reports without ALL of these items are INCOMPLETE and INVALID.
+
+#### A. GitHub Push Evidence
+- **Screenshot**: GitHub Actions page showing the triggering commit SHA, workflow name (`firebase-deploy.yml`), and **green ✅ Success** status badge.
+- **Screenshot** or **URL**: The specific workflow run URL (e.g., `https://github.com/cezarypi5/uk_lock_recon/actions/runs/XXXXX`).
+- Evidence MUST show the commit message matching the version bump (e.g., `v1.7.3 - ...`).
+
+#### B. Firebase Deployment Evidence
+- **Screenshot**: The live site at `https://lock-recon.web.app` showing:
+  - The footer version string matching the deployed version (e.g., `v1.7.3 // CYBERCORE`)
+  - The floating action bar visible at the bottom-right of the viewport
+- **Screenshot**: GitHub Actions `build_and_deploy` job detail showing completion time (e.g., `1m 14s`) and ✅ status for all steps.
+
+#### C. 10 Live Filter Combination Screenshots
+The agent MUST use the browser subagent to navigate to `https://lock-recon.web.app`, execute FIND LOCKS for each of the following 10 filter combinations, and embed a screenshot of each result grid in the walkthrough:
+
+| # | Filter Combination | Required Screenshot Filename Pattern |
+|---|---|---|
+| 1 | No filters (all results) | `combo_01_no_filters_*.png` |
+| 2 | Security Tier = Elite | `combo_02_elite_*.png` |
+| 3 | Security Tier = Top Notch | `combo_03_top_notch_*.png` |
+| 4 | Budget = £70-100 | `combo_04_budget_mid_*.png` |
+| 5 | Budget = £100+ | `combo_05_budget_high_*.png` |
+| 6 | Anti-Attack = Anti-Snap only | `combo_06_anti_snap_*.png` |
+| 7 | Anti-Attack = Anti-Snap + Anti-Pick | `combo_07_dual_attack_*.png` |
+| 8 | Elite Tier + £100+ Budget | `combo_08_elite_premium_*.png` |
+| 9 | Cylinder Type = Thumbturn | `combo_09_thumbturn_*.png` |
+| 10 | Keyword search = "ultion" | `combo_10_keyword_*.png` |
+
+Each screenshot MUST show:
+- The active filter state (filter panel visible with correct radio/checkbox state)
+- The result grid with at least the first row of lock cards rendered
+- The floating action bar visible at the bottom of the screen
+- The status bar showing e.g. "● EXTRACTION COMPLETE — N target(s) acquired"
+
+#### D. Embedding Requirements
+All visual evidence MUST be embedded in `walkthrough.md` using the format:
+```
+![descriptive caption](/absolute/path/to/screenshot.png)
+```
+Screenshots MUST be saved to the artifacts directory (`C:\Users\Cezary\.gemini\antigravity\brain\<conversation-id>\`) and referenced with absolute paths. The `file:///` prefix is required for local paths.

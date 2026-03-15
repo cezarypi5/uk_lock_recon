@@ -267,8 +267,9 @@ export const KNOWN_PRODUCTS = [
     },
     {
         keywords: ['era', 'caveo'],
-        product_url: 'https://jcphardware.co.uk/era-fortress-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007/',
-        lock_image: 'https://cdn11.bigcommerce.com/s-fytdcmxyp5/images/stencil/608x608/products/1101/12232/era-fortress-3-star-anti-snap-euro-cylinder-upvc-front-door-lock-ts007__08166.1755510467.jpg?c=2',
+        // ✅ Verified thumbturn image — shows cylinder with thumbturn knob (safe.co.uk/products/grande/156257.jpg)
+        product_url: 'https://www.safe.co.uk/products/caveo-3-star-euro-thumbturn-cylinder-35-35-70.html',
+        lock_image: 'https://assets-a.safe.co.uk/products/grande/156257.jpg',
         price_gbp: '£38.76',
         cylinder_type: 'thumbturn',
         cylinder_sizes: [

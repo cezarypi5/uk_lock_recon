@@ -98,7 +98,35 @@ Generate a comprehensive dashboard using a custom **Cybercore CSS** design syste
 - **Footer:** Real-time `SECURED BY DESIGN` compliance status strip with live count of TS007 3* compliant locks
 - **Telemetry Panel:** Collapsible bottom drawer showing extraction logs, retry counts, token usage, timestamps
 
----
+### 3.4 ⚠️ FLAG / EMOJI RENDERING RULE (MANDATORY — NEVER BREAK)
+
+**Never use Unicode country flag emoji (e.g. 🇬🇧, 🇵🇱) anywhere in the Cybercore UI.**
+
+**Root cause (documented incident v2.0.2–v2.0.3, 2026-03-17):**  
+The global UI font is JetBrains Mono (`--font-mono`). This font **does not support Unicode regional indicator flag sequences**. Any element inheriting this font (including children of `.lang-btn`, headers, cards, etc.) will render flag emoji as raw Latin letter pairs — e.g. `🇬🇧` → `"GB"`, `🇵🇱` → `"PL"`. Adding an emoji font-family override is unreliable and platform-dependent.
+
+**Mandatory pattern for all flag/country imagery:**
+```html
+<!-- ✅ ALWAYS use real img tags from flagcdn.com -->
+<img class="lang-flag" src="https://flagcdn.com/gb.svg" alt="English" />
+<img class="lang-flag" src="https://flagcdn.com/pl.svg" alt="Polski" />
+```
+```css
+/* ✅ Style as a sized, rounded image — NEVER as a font character */
+.lang-flag {
+  display: block;
+  width: 22px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+```
+
+**CDN pattern:** `https://flagcdn.com/{iso2-lowercase}.svg`  
+Examples: `gb.svg` (UK), `pl.svg` (Poland), `de.svg` (Germany), `fr.svg` (France).
+
+This rule applies permanently to ALL future language switchers, card badges, or any other UI element requiring a national flag in this project.
+
 
 ## 4. OUTPUT FORMATTING
 - Each lock rendered as a standalone Cybercore card entity

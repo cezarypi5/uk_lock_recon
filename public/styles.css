@@ -170,9 +170,12 @@ body {
 }
 
 .lang-flag {
-  font-size: 1.1rem;
-  line-height: 1;
-  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  display: block;
+  width: 22px;
+  height: 16px;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(0,243,255,0.3);
 }
 
 .lang-name {

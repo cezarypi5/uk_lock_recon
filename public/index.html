@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="version" content="2.0.3" />
+  <meta name="version" content="2.0.4" />
   <meta name="description"
     content="UK High-Security Door Lock Intelligence Dashboard — TS007 3-Star, SS312 Diamond, BS3621 compliant lock finder with advanced filtering." />
 
@@ -34,7 +34,7 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@700;900&display=swap"
     rel="stylesheet" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=2.0.3" />
+  <link rel="stylesheet" href="styles.css?v=2.0.4" />
 </head>
 
 <body>
@@ -80,12 +80,10 @@
       <!-- ── Language switcher ── -->
       <div class="lang-switcher" id="lang-switcher" aria-label="Language selector">
         <button class="lang-btn lang-active" data-lang="en" aria-label="Switch to English" title="English">
-          <span class="lang-flag">🇬🇧</span>
-          <span class="lang-name">EN</span>
+          <img class="lang-flag" src="https://flagcdn.com/gb.svg" alt="English" />
         </button>
         <button class="lang-btn" data-lang="pl" aria-label="Przełącz na Polski" title="Polski">
-          <span class="lang-flag">🇵🇱</span>
-          <span class="lang-name">PL</span>
+          <img class="lang-flag" src="https://flagcdn.com/pl.svg" alt="Polski" />
         </button>
       </div>
 
@@ -503,10 +501,10 @@
   <script src="firebaseConfig.js?v=2.0.0"></script>
 
   <!-- i18n module — must load before script.js -->
-  <script type="module" src="i18n.js?v=2.0.3"></script>
+  <script type="module" src="i18n.js?v=2.0.4"></script>
 
   <!-- UI App Logic -->
-  <script type="module" src="script.js?v=2.0.3"></script>
+  <script type="module" src="script.js?v=2.0.4"></script>
 
   <!-- Toast Notifications Container -->
   <div id="toast-container" class="toast-container"></div>

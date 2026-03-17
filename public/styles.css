@@ -143,14 +143,14 @@ body {
 .lang-btn {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
   background: transparent;
   border: 1px solid rgba(0, 243, 255, 0.25);
   color: rgba(255, 255, 255, 0.5);
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
-  padding: 4px 10px;
+  padding: 4px 8px;
   cursor: pointer;
   border-radius: 2px;
   transition: all 0.2s ease;
@@ -175,7 +175,7 @@ body {
 }
 
 .lang-name {
-  font-weight: 600;
+  display: none;
 }
 
 

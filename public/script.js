@@ -323,6 +323,20 @@ async function initiateScan() {
         isScanning = false;
         btnScan.disabled = false;
         missionParams.classList.remove('params-scanning');
+        // ── Auto-scroll to results (cache-hit path) ──────────────────────────
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                const banner = document.getElementById('results-count-banner');
+                const grid   = document.getElementById('lock-grid');
+                const target = banner && !banner.hidden ? banner : grid;
+                if (target) {
+                    const absoluteY = target.getBoundingClientRect().top
+                                    + window.scrollY
+                                    - 16;
+                    window.scrollTo({ top: absoluteY, behavior: 'instant' });
+                }
+            }, 150);
+        });
         return;
     }
 

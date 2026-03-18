@@ -169,6 +169,7 @@ export const TRANSLATIONS = {
         targetCount:        n => `[${n} TARGETS]`,
         compliantCount:     n => `${n} COMPLIANT LOCK(S)`,
         zeroTargetCount:    '0 TARGETS',
+        bannerComplete:     n => `TARGET ACQUISITION COMPLETE — ${n} LOCK${n !== 1 ? 'S' : ''} IDENTIFIED`,
 
         // Card — cylinder type badges
         badgeThumb:         '🔄 THUMBTURN',
@@ -392,6 +393,7 @@ export const TRANSLATIONS = {
         targetCount:        n => `[${n} WYNIKÓW]`,
         compliantCount:     n => `${n} ZGODNYCH ZAMKÓW`,
         zeroTargetCount:    '0 WYNIKÓW',
+        bannerComplete:     n => `NAMIERZONO CEL — ZNALEZIONO ${n} ZAME${n === 1 ? 'K' : n >= 2 && n <= 4 ? 'KI' : 'KÓW'}`,
 
         // Card — cylinder type badges
         badgeThumb:         '🔄 Z NAKRĘTKĄ',

@@ -439,7 +439,7 @@ function renderResults(allLocks, cfg, telem) {
         // ── Results count banner ─────────────────────────────────────────────
         const banner = document.getElementById('results-count-banner');
         if (banner) {
-            banner.textContent = `TARGET ACQUISITION COMPLETE — ${filtered.length} LOCK${filtered.length !== 1 ? 'S' : ''} IDENTIFIED`;
+            banner.textContent = t('bannerComplete')(filtered.length);
             banner.hidden = false;
         }
     }

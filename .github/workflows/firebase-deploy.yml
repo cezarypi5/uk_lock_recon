@@ -30,6 +30,9 @@ jobs:
       - name: 'Run Native HTTP Link Validation Matrix'
         run: node test/exhaustive_http_20.js
 
+      - name: 'Sync version.txt into public/'
+        run: cp version.txt public/version.txt
+
       - name: 'Deploy to Firebase Hosting'
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

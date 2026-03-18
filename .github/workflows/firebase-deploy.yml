@@ -27,11 +27,20 @@ jobs:
       - name: 'Install Firebase CLI'
         run: npm install -g firebase-tools
 
+      - name: 'Assert version.txt consistency'
+        run: |
+          ROOT_VER=$(cat version.txt | tr -d '[:space:]')
+          PUB_VER=$(cat public/version.txt | tr -d '[:space:]')
+          echo "Root version.txt:   $ROOT_VER"
+          echo "Public version.txt: $PUB_VER"
+          if [ "$ROOT_VER" != "$PUB_VER" ]; then
+            echo "❌ VERSION MISMATCH — commit both version.txt files before deploying."
+            exit 1
+          fi
+          echo "✅ Version consistent: $ROOT_VER"
+
       - name: 'Run Native HTTP Link Validation Matrix'
         run: node test/exhaustive_http_20.js
-
-      - name: 'Sync version.txt into public/'
-        run: cp version.txt public/version.txt
 
       - name: 'Deploy to Firebase Hosting'
         env:
@@ -39,7 +48,22 @@ jobs:
         run: |
           echo $GOOGLE_APPLICATION_CREDENTIALS > service-account.json
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
-          firebase deploy --only hosting --project lock-recon -m "v1.7.0 Public Release"
+          firebase deploy --only hosting --project lock-recon
+
+      - name: 'Post-Deploy Smoke Test'
+        run: |
+          echo "Waiting 20s for CDN propagation..."
+          sleep 20
+          LIVE_VERSION=$(curl -sf https://lock-recon.web.app/version.txt | tr -d '[:space:]')
+          EXPECTED_VERSION=$(cat public/version.txt | tr -d '[:space:]')
+          echo "Live:     $LIVE_VERSION"
+          echo "Expected: $EXPECTED_VERSION"
+          if [ "$LIVE_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "❌ SMOKE TEST FAILED: live site is serving v$LIVE_VERSION, expected v$EXPECTED_VERSION"
+            echo "This means Firebase deployed an empty or stale payload. Investigate immediately."
+            exit 1
+          fi
+          echo "✅ Smoke test passed — https://lock-recon.web.app is live at v$LIVE_VERSION"
 
       - name: 'Deploy Firestore Security Rules'
         continue-on-error: true
@@ -48,4 +72,4 @@ jobs:
         run: |
           echo $GOOGLE_APPLICATION_CREDENTIALS > service-account.json
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
-          firebase deploy --only firestore --project lock-recon -m "v1.7.0 Firestore Rules"
+          firebase deploy --only firestore --project lock-recon

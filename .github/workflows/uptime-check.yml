@@ -1,0 +1,38 @@
+name: Uptime Check
+
+on:
+  schedule:
+    - cron: '0,30 * * * *'  # Every 30 minutes, 24/7
+  workflow_dispatch:         # Allow manual trigger from GitHub UI
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check site is reachable (HTTP 200)'
+        run: |
+          HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}" https://lock-recon.web.app/)
+          echo "HTTP status: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ SITE IS DOWN — https://lock-recon.web.app returned HTTP $HTTP_CODE"
+            exit 1
+          fi
+          echo "✅ Site is UP (HTTP $HTTP_CODE)"
+
+      - name: 'Verify version.txt is served'
+        run: |
+          VERSION=$(curl -sf https://lock-recon.web.app/version.txt | tr -d '[:space:]')
+          if [ -z "$VERSION" ]; then
+            echo "❌ version.txt is not served — site may be empty or misconfigured"
+            exit 1
+          fi
+          echo "✅ Live version: $VERSION"
+
+      - name: 'Verify index.html contains expected content'
+        run: |
+          BODY=$(curl -sf https://lock-recon.web.app/)
+          if ! echo "$BODY" | grep -q "lock-recon\|UK RESIDENTIAL\|TARGET ACQUISITION"; then
+            echo "❌ index.html does not contain expected app content — possible empty deploy"
+            exit 1
+          fi
+          echo "✅ index.html content verified"

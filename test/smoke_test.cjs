@@ -17,7 +17,7 @@ const https = require('https');
 const fs = require('fs');
 
 const PROD_URL     = 'https://lock-recon.web.app';
-const EXPECTED_VERSION = '2.1.2';
+const EXPECTED_VERSION = '2.1.3';
 const CHROME_PATH  = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const SS_DIR       = 'C:\\Users\\Cezary\\.gemini\\antigravity\\brain\\e7fd0cd6-3530-4d44-91c7-d44fab83675a';
 

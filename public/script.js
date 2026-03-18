@@ -348,26 +348,34 @@ async function initiateScan() {
         allLocksCache = locks;
         renderResults(allLocksCache, cfg, true);
         showToast('Database Synchronized', 'success');
-        // ── Auto-scroll to results after cards are painted ──────────────────
+        // Hide scan overlay NOW (synchronously) so the layout settles
+        // before the scroll fires — prevents the smooth-scroll cancellation race
+        isScanning = false;
+        btnScan.disabled = false;
+        missionParams.classList.remove('params-scanning');
+        hideScanOverlay();
+        // ── Auto-scroll to results after all repaints have settled ──────────
+        // 500ms gives the browser time to complete the overlay hide + layout reflow
+        // scrollIntoView is more reliable than window.scrollTo here
         setTimeout(() => {
-            const grid = document.getElementById('lock-grid');
             const banner = document.getElementById('results-count-banner');
+            const grid   = document.getElementById('lock-grid');
             const target = banner && !banner.hidden ? banner : grid;
-            if (target) {
-                const y = Math.max(0, target.getBoundingClientRect().top + window.scrollY - 24);
-                window.scrollTo({ top: y, behavior: 'smooth' });
-            }
-        }, 300);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 500);
     } catch (err) {
         lockGrid.innerHTML = '';
         setStatus('error', '● EXTRACTION FAILED', `Error: ${err.message}`);
         lockGrid.appendChild(buildErrorCard('DATABASE FAILURE', err.message));
         showToast('Error: Re-establishing Connection', 'error');
     } finally {
-        isScanning = false;
-        btnScan.disabled = false;
-        missionParams.classList.remove('params-scanning');
-        hideScanOverlay();
+        // Guard: only reset scanning state if try block didn't already do it
+        if (isScanning) {
+            isScanning = false;
+            btnScan.disabled = false;
+            missionParams.classList.remove('params-scanning');
+            hideScanOverlay();
+        }
     }
 }
 

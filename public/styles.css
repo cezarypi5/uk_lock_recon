@@ -2513,3 +2513,35 @@ body {
     opacity: 0;
   }
 }
+/* -- DB Sync Status Badge ----------------------------------------------------- */
+.db-sync-readout {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: rgba(0, 243, 255, 0.45);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: color 0.5s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.db-sync-readout.db-sync-live {
+  color: rgba(0, 243, 255, 0.75);
+}
+
+.db-sync-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00ff8c;
+  box-shadow: 0 0 6px #00ff8c, 0 0 12px rgba(0,255,140,0.4);
+  flex-shrink: 0;
+  animation: syncPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes syncPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}

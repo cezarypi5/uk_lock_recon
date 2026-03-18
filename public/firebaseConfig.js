@@ -3,7 +3,7 @@ import {
     initializeFirestore,
     persistentLocalCache,
     persistentMultipleTabManager,
-    collection, getDocs, onSnapshot, query, orderBy, limit
+    collection, getDocs, getDoc, doc, onSnapshot, query, orderBy, limit
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
 // The true configuration for 'Lock Recon'
@@ -35,4 +35,4 @@ try {
     console.error('[Firebase Config] Error initializing Web SDK:', error);
 }
 
-export { db, collection, getDocs, onSnapshot, query, orderBy, limit };
+export { db, collection, getDocs, getDoc, doc, onSnapshot, query, orderBy, limit };

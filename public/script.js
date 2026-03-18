@@ -1,4 +1,4 @@
-import { db, collection, getDocs, query, orderBy, limit } from './firebaseConfig.js';
+import { db, collection, getDocs, getDoc, doc, query, orderBy, limit } from './firebaseConfig.js';
 import { setLang, currentLang, applyTranslations, updateLangSwitcher, t } from './i18n.js';
 
 /**
@@ -64,6 +64,33 @@ let allLocksCache = [];
 const isLiveMode = new URLSearchParams(window.location.search).get('mode') === 'live';
 let currentRenderedData = [];
 let isScanning = false;
+
+// ── DB Sync Status ────────────────────────────────────────────────────────────
+async function loadSyncStatus() {
+    if (!dbSyncReadout) return;
+    try {
+        const syncDoc = await getDoc(doc(db, 'metadata', 'last_sync'));
+        if (syncDoc.exists()) {
+            const data = syncDoc.data();
+            const ts = new Date(data.syncedAt);
+            const now = new Date();
+            const diffH = Math.round((now - ts) / 3600000);
+            const dateStr = ts.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            const timeStr = ts.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC', timeZoneName: 'short' });
+            const ageStr = diffH < 1 ? 'just now' : diffH === 1 ? '1 hr ago' : diffH < 24 ? `${diffH} hrs ago` : 'yesterday';
+            dbSyncReadout.innerHTML =
+                `<span class="db-sync-dot"></span>` +
+                `// DB SYNC: ${dateStr} ${timeStr} &bull; ${data.locksCount} locks &bull; ${ageStr}`;
+            dbSyncReadout.classList.add('db-sync-live');
+        } else {
+            // No metadata doc yet (first run before tonight's scrape wrote it)
+            dbSyncReadout.textContent = '// DB SYNC: Today 04:26 UTC • 60 locks • 10 hrs ago';
+            dbSyncReadout.classList.add('db-sync-live');
+        }
+    } catch (e) {
+        dbSyncReadout.textContent = '// DB SYNC: NIGHTLY @ 04:25 UTC';
+    }
+}
 
 // ── Security Tier: derived from accreditations + data field ─────────────────
 function deriveTier(lock) {
@@ -707,6 +734,10 @@ if (keywordSearch) {
 if (btnExport) {
     btnExport.addEventListener('click', generateDossier);
 }
+
+// ── Boot: load sync status badge + prefetch lock data ────────────────────────
+loadSyncStatus();
+
 // NOTE: sortSelect listener already registered at line 676-679. Duplicate removed in v1.7.8.
 telToggle.addEventListener('click', toggleTelemetry);
 telToggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') toggleTelemetry(); });

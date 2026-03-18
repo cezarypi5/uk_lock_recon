@@ -103,6 +103,15 @@ async function runNightlyScrape() {
         });
 
         await batch.commit();
+
+        // Write a lightweight metadata/last_sync document the frontend reads to show "last updated"
+        await db.collection('metadata').doc('last_sync').set({
+            syncedAt: new Date().toISOString(),
+            locksCount: finalLocks.length,
+            runDurationMs: report.durationMs ?? null,
+            overallStatus: report.overallStatus ?? 'SUCCESS'
+        });
+
         console.log('[Worker] ✨ Firebase Firestore successfully updated with fresh locks.');
         console.log('\n[Worker] 🏁 Nightly scrape cycle complete. Exiting gracefully.');
         process.exit(0);

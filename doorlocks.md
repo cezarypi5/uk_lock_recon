@@ -179,6 +179,21 @@ The entire deployment process MUST operate on full autopilot:
    4. **Append to `walkthrough.md`** — add a dated section with: version number, timestamp, changed files table, "User Request Verification" row, and all embedded screenshots using `file:///` URIs.
    5. **Never skip this step** — if the AI fails to produce a test report after a deployment, the deployment is considered **incomplete** and must be re-done with proper documentation.
 
+5. **⚠️ MANDATORY VERSION BUMP SMOKE TEST — Every Version Bump, No Exceptions:**  
+   After every version bump deployment (patch, minor, or major), the AI MUST execute a live functional smoke test using Puppeteer on the production URL (`https://lock-recon.web.app`). The test MUST:
+   1. **Fetch and assert `version.txt`** (cache-busted: `GET /version.txt?t={timestamp}`) — must return the exact new version string. If it returns a 404 or old version, the deployment is FAILED.
+   2. **Select a filter** — choose a specific security tier (e.g. "High Security") in the Mission Parameters panel before clicking FIND LOCKS.
+   3. **📸 Screenshot 1 — Filter Selection (BEFORE SCAN):** Capture the full viewport showing the filter panel with the chosen filter visibly selected. This screenshot MUST be taken **before** clicking the FIND LOCKS button so it proves exactly what filter state was active.
+   4. **Click FIND LOCKS** — trigger the scan and wait for `.lock-card` elements to appear (up to 15s).
+   5. **📸 Screenshot 2 — Results Page (AFTER SCAN):** Scroll to the `#lock-grid` container and capture the results page showing the loaded lock cards. This proves the app rendered results correctly for the chosen filter.
+   6. **Verify 2 lock cards contain:**
+      - A visible lock image (not broken)
+      - A price value in GBP (not blank)
+      - At least one security badge (TS007 3★, SS312 Diamond, or BS3621)
+   7. **Check browser console** — zero JavaScript errors or unhandled exceptions. Resource-load failures (`net::ERR_CONNECTION_FAILED` for specific broken image URLs) are data-quality warnings and do not fail this check.
+   8. **Embed both screenshots in `walkthrough.md`** using `file:///` absolute URIs with captions identifying Screenshot 1 (filter) and Screenshot 2 (results).
+   9. **This test is the minimum bar.** If any of the above fail, the version bump is NOT complete — the AI MUST investigate, fix, and re-deploy before reporting done.
+
 
 ---
 

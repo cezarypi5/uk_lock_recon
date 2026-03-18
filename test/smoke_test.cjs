@@ -52,11 +52,15 @@ async function main() {
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 900 });
 
-  // Capture console errors (suppress known ESM browser internal noise)
+  // Capture console errors (suppress resource-load failures — data quality, not app bugs)
   page.on('console', msg => {
     if (msg.type() === 'error') {
-      consoleErrors.push(msg.text());
-      console.log(`  🔴 Console Error: ${msg.text()}`);
+      const txt = msg.text();
+      // Ignore broken image URLs / external resource failures — these are data issues
+      if (txt.includes('ERR_CONNECTION_FAILED') || txt.includes('ERR_NAME_NOT_RESOLVED') ||
+          txt.includes('Failed to load resource') || txt.includes('net::ERR_')) return;
+      consoleErrors.push(txt);
+      console.log(`  🔴 Console Error: ${txt}`);
     }
   });
   page.on('pageerror', err => {

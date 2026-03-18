@@ -1,6 +1,8 @@
 # AGENT SYSTEM PROMPT: UK LOCK-SPEC RECONNAISSANCE
 ### Revised Specification v2.0 — Issues Addressed
 
+> 🔗 **Live Production App:** [https://lock-recon.web.app](https://lock-recon.web.app)
+
 ---
 
 ## 1. MISSION PROFILE
@@ -171,7 +173,10 @@ The entire deployment process MUST operate on full autopilot:
 1. **Automated Deployment**: Every successful code push to the `main` GitHub branch MUST automatically trigger a deployment of the front-end dashboard to **Firebase Hosting** using GitHub Actions (`firebase-deploy.yml`).
 2. **Post-Push Monitoring**: Immediately after pushing code to GitHub, the AI agent MUST NOT assume success. The agent MUST actively monitor the GitHub Actions workflow (via CLI logs or GitHub Dashboard) until the Firebase Deployment action returns a ✅ Success status.
 3. **Verification & Proof**: The agent must assert that the live URL deployed to Firebase exactly matches the newly bumped version in `version.txt`.
-4. **⚠️ MANDATORY TEST REPORT — Every Deployment, No Exceptions:**  
+
+   > 🔗 **Live Production App:** [https://lock-recon.web.app](https://lock-recon.web.app)
+
+4. **⚠️ MANDATORY TEST REPORT — Every Deployment, No Exceptions:**
    After EVERY successful Firebase deployment (including patch releases, bug fixes, and data patches), the AI MUST:
    1. **Capture GitHub Actions screenshot** — showing the commit SHA, workflow name, ✅ Success status, and duration.
    2. **Capture live site footer screenshot** — confirming the deployed version matches `version.txt`.

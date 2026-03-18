@@ -115,7 +115,7 @@ async function runScenario(page, scenario, results) {
 
   // Verify language is active (check html lang attr or button state)
   const activeLang = await page.evaluate(() => {
-    const active = document.querySelector('.lang-btn.active');
+    const active = document.querySelector('.lang-btn.lang-active');
     return active ? active.dataset.lang : null;
   });
   if (activeLang === scenario.lang) {

@@ -171,11 +171,15 @@ async function runScenario(page, scenario, results) {
   }
 
   // ── SCREENSHOT 2: Results page (AFTER scan) ──────────────────────────────
-  await page.evaluate(() => {
+  // Get the exact Y position of the lock grid and scroll to it explicitly
+  // (scrollIntoView inside evaluate can be ignored by the browser compositor)
+  const gridTop = await page.evaluate(() => {
     const grid = document.getElementById('lock-grid');
-    if (grid) grid.scrollIntoView({ behavior: 'instant', block: 'start' });
+    return grid ? Math.max(0, grid.getBoundingClientRect().top + window.scrollY - 20) : 0;
   });
-  await new Promise(r => setTimeout(r, 500));
+  await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), gridTop);
+  await new Promise(r => setTimeout(r, 1200)); // let compositor paint the grid at new scroll position
+  console.log(`  ↕ Scrolled to lock-grid (y=${gridTop}px)`);
   const ss2 = `${SS_DIR}\\ss_${scenario.id}_2_results.png`;
   await page.screenshot({ path: ss2, fullPage: false });
   results.screenshots.push({ label: `[${scenario.id}] AFTER SCAN — ${cardCount} cards, ${scenario.lang.toUpperCase()}`, path: ss2 });

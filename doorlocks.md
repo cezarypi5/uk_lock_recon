@@ -129,6 +129,22 @@ Examples: `gb.svg` (UK), `pl.svg` (Poland), `de.svg` (Germany), `fr.svg` (France
 
 This rule applies permanently to ALL future language switchers, card badges, or any other UI element requiring a national flag in this project.
 
+### 3.5 ⚠️ MANDATORY POST-SCAN UX (ALWAYS ENFORCE)
+
+After the user presses **FIND LOCKS** and results are loaded, the app MUST unconditionally:
+
+1. **Auto-scroll to results** — the page MUST automatically scroll to the lock grid so the user does not have to scroll manually. This MUST happen **after** results are fully rendered (not in a `finally` block that fires before cards paint).
+   - Implementation: use `setTimeout(() => window.scrollTo({ top: offsetTop, behavior: 'smooth' }), 300)` inside the `try` block after `renderResults()`, where `offsetTop = getBoundingClientRect().top + window.scrollY - 24` of the `#results-count-banner` or `#lock-grid`.
+
+2. **Display a lock count banner** — a `#results-count-banner` element MUST appear directly above the lock grid, styled in the Cybercore Orbitron font, showing exactly how many locks were found, e.g.:
+   - `TARGET ACQUISITION COMPLETE — 15 LOCKS IDENTIFIED`
+   - `TARGET ACQUISITION COMPLETE — 60 LOCKS IDENTIFIED`
+   - Must be hidden (`hidden` attribute) on page load and revealed only after a successful scan.
+   - Must be cleared/hidden if a subsequent scan returns 0 results.
+   - CSS: neon cyan glow bar with `fadeIn` animation, matching the Cybercore design system.
+
+These two behaviours are **product requirements**, not optional. Any code change that removes or breaks either MUST be immediately reverted or fixed and re-deployed with a patch version bump + smoke test.
+
 
 ## 4. OUTPUT FORMATTING
 - Each lock rendered as a standalone Cybercore card entity

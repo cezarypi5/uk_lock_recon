@@ -348,6 +348,16 @@ async function initiateScan() {
         allLocksCache = locks;
         renderResults(allLocksCache, cfg, true);
         showToast('Database Synchronized', 'success');
+        // ── Auto-scroll to results after cards are painted ──────────────────
+        setTimeout(() => {
+            const grid = document.getElementById('lock-grid');
+            const banner = document.getElementById('results-count-banner');
+            const target = banner && !banner.hidden ? banner : grid;
+            if (target) {
+                const y = Math.max(0, target.getBoundingClientRect().top + window.scrollY - 24);
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        }, 300);
     } catch (err) {
         lockGrid.innerHTML = '';
         setStatus('error', '● EXTRACTION FAILED', `Error: ${err.message}`);
@@ -358,7 +368,6 @@ async function initiateScan() {
         btnScan.disabled = false;
         missionParams.classList.remove('params-scanning');
         hideScanOverlay();
-        document.getElementById('lock-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
@@ -397,6 +406,12 @@ function renderResults(allLocks, cfg, telem) {
         statusCount.textContent = t('targetCount')(filtered.length);
         footerCount.textContent = t('compliantCount')(filtered.length);
         btnExport.disabled = false;
+        // ── Results count banner ─────────────────────────────────────────────
+        const banner = document.getElementById('results-count-banner');
+        if (banner) {
+            banner.textContent = `TARGET ACQUISITION COMPLETE — ${filtered.length} LOCK${filtered.length !== 1 ? 'S' : ''} IDENTIFIED`;
+            banner.hidden = false;
+        }
     }
 
     if (telem) { telPanel.hidden = false; loadTelemetry(); }

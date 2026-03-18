@@ -354,15 +354,23 @@ async function initiateScan() {
         btnScan.disabled = false;
         missionParams.classList.remove('params-scanning');
         hideScanOverlay();
-        // ── Auto-scroll to results after all repaints have settled ──────────
-        // 500ms gives the browser time to complete the overlay hide + layout reflow
-        // scrollIntoView is more reliable than window.scrollTo here
-        setTimeout(() => {
-            const banner = document.getElementById('results-count-banner');
-            const grid   = document.getElementById('lock-grid');
-            const target = banner && !banner.hidden ? banner : grid;
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 500);
+        // ── Auto-scroll to results after overlay hides and layout settles ──
+        // Uses requestAnimationFrame to guarantee the scroll fires after the
+        // browser has committed the DOM paint following hideScanOverlay().
+        // 'instant' behavior cannot be cancelled by CSS scroll-behavior:smooth.
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                const banner = document.getElementById('results-count-banner');
+                const grid   = document.getElementById('lock-grid');
+                const target = banner && !banner.hidden ? banner : grid;
+                if (target) {
+                    const absoluteY = target.getBoundingClientRect().top
+                                    + window.scrollY
+                                    - 16; // 16px breathing room above target
+                    window.scrollTo({ top: absoluteY, behavior: 'instant' });
+                }
+            }, 150);
+        });
     } catch (err) {
         lockGrid.innerHTML = '';
         setStatus('error', '● EXTRACTION FAILED', `Error: ${err.message}`);

@@ -1,5 +1,5 @@
 import { db, collection, getDocs, query, orderBy, limit } from './firebaseConfig.js';
-import { setLang, currentLang, applyTranslations, updateLangSwitcher } from './i18n.js';
+import { setLang, currentLang, applyTranslations, updateLangSwitcher, t } from './i18n.js';
 
 /**
  * script.js — UK Super Agent Lock Finder v2.0.0

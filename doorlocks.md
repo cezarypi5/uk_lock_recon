@@ -179,31 +179,59 @@ The entire deployment process MUST operate on full autopilot:
    4. **Append to `walkthrough.md`** — add a dated section with: version number, timestamp, changed files table, "User Request Verification" row, and all embedded screenshots using `file:///` URIs.
    5. **Never skip this step** — if the AI fails to produce a test report after a deployment, the deployment is considered **incomplete** and must be re-done with proper documentation.
 
-5. **⚠️ MANDATORY VERSION BUMP SMOKE TEST — Every Version Bump, No Exceptions:**  
-   After every version bump deployment (patch, minor, or major), the AI MUST execute a live functional smoke test using Puppeteer on the production URL (`https://lock-recon.web.app`). The test MUST run **4 distinct scenarios** (2 filter combos × 2 languages):
+5. **⚠️ MANDATORY VERSION BUMP SMOKE TEST — Scoped by Change Type:**
 
-   | Scenario | Language | Security Tier | Budget Filter |
-   |----------|----------|---------------|---------------|
+   Test requirements scale with the severity of the version bump. The **4-scenario smoke test** is the minimum bar for **patch and minor releases only**.
+
+   ### Test Tier by Version Type
+
+   | Version Bump | Example | Test Required |
+   |---|---|---|
+   | **Patch** `+0.0.1` | Bug fix, wording, CSS tweak | ✅ 4-Scenario Smoke Test |
+   | **Minor** `+0.1.0` | New feature added | ✅ 4-Scenario Smoke Test |
+   | **Major** `+1.0.0` | Breaking change, architecture redesign | 🔴 Full Test Suite (see below) |
+
+   ---
+
+   ### ✅ Patch / Minor — 4-Scenario Smoke Test
+
+   Run `node test/smoke_test.cjs` against the live production URL after every patch or minor deployment.
+
+   The test runs **4 scenarios** (2 filter combos × 2 languages):
+
+   | Scenario | Language | Security Tier | Budget |
+   |----------|----------|---------------|--------|
    | EN-A | English | High Security | Any |
    | EN-B | English | Elite | £40–70 |
    | PL-A | Polish | High Security | Any |
    | PL-B | Polish | Top-Notch | Any |
 
-   **For each scenario, the test MUST:**
-   1. **Switch language** — click the EN or PL lang button and verify the active state.
-   2. **Apply filters** — select the specified security tier (and budget if applicable).
-   3. **📸 Screenshot 1 — Filter Selection (BEFORE SCAN):** Capture the full viewport showing the filter panel with the chosen filter visibly selected.
-   4. **Click FIND LOCKS** — trigger the scan and wait for `.lock-card` elements to appear (up to 15s).
-   5. **📸 Screenshot 2 — Results Page (AFTER SCAN):** Scroll to `#lock-grid` and capture the loaded lock cards.
-   6. **Verify card #1 contains:** a visible image, a price in GBP, and at least one security badge (TS007 3★, SS312 Diamond, or BS3621).
+   **Each scenario:**
+   1. Switches language, verifies `.lang-btn.lang-active` state.
+   2. Applies security tier (+ budget if specified).
+   3. **📸 Screenshot 1** — filter panel with selection visible (BEFORE SCAN).
+   4. Clicks FIND LOCKS, waits for `.lock-card` elements (15s timeout).
+   5. **📸 Screenshot 2** — scrolls to `#lock-grid` using `window.scrollTo(offsetTop)` + 1200ms wait, captures the results.
+   6. Validates card #1: price (GBP), security badge (TS007/SS312/BS3621), image loaded.
 
-   **Global checks (once per run):**
-   - **Fetch and assert `version.txt`** (cache-busted) — must return the exact new version string.
-   - **Check footer version string** — must show `vX.Y.Z // CYBERCORE`.
-   - **Zero JavaScript console errors** — resource-load failures (broken image URLs) are data-quality warnings and do not fail this check.
+   **Global checks (once per run):** `version.txt` matches expected, footer shows `vX.Y.Z // CYBERCORE`, zero JS console errors.
+   **Output:** 8 screenshots saved to the artifacts directory, embedded in `walkthrough.md`.
 
-   **Output: 8 screenshots** (2 per scenario), all embedded in `walkthrough.md` using `file:///` absolute URIs.
-   This test is the minimum bar. If any scenario fails a critical check, the version bump is NOT complete — the AI MUST investigate, fix, and re-deploy before reporting done.
+   ---
+
+   ### 🔴 Major Release — Full Test Suite
+
+   In addition to the 4-scenario smoke test, a major release MUST also include:
+
+   1. **500-permutation Monte Carlo stress test** — random filter combinations across all dropdowns.
+   2. **Full bilingual QA pass** — manually verify all i18n strings in both EN and PL.
+   3. **Database consistency check** — confirm Firestore records match what is displayed in the UI.
+   4. **Regression check** — re-run all previously fixed bugs to confirm no regressions.
+   5. **Live environment report** — full test report section in `walkthrough.md` with screenshots for every major UI surface.
+
+   If any test in any tier fails a critical check, the version bump is **NOT complete** — the AI MUST investigate, fix, and re-deploy before reporting done.
+
+
 
 
 

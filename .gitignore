@@ -6,20 +6,46 @@ server/service-account.json
 *.log
 .firebase/
 
-# Debug & test artefacts (do not commit)
+# ─── Debug & Test Artefacts (never commit) ────────────────────────────────────
 extract_logs/
 ci_logs/
 scraper-error.log
+error.log
 server_logs*.txt
 test_output*.txt
+test_output*.json
 deploy_debug.txt
 debug_log.txt
 db_test_log.txt
 config-clean.txt
 live_index.html
-old_index*.js
 
-# InsForge & AI agent skills
+# ─── One-off / patch / diagnostic scripts ─────────────────────────────────────
+old_index*.js
+patch_*.mjs
+patch_*.js
+stealth_test.mjs
+capture_live.cjs
+run_latency_benchmark.js
+diag_*.cjs
+diag_*.mjs
+diag_*.js
+*_diag.cjs
+*_diag.mjs
+*_diag.js
+
+# ─── Root-level stress / permutation / benchmark test scripts ─────────────────
+# Test scripts that BELONG to the project live in /test/ and ARE tracked.
+# Files matching test_*.mjs or test_*.js in the ROOT are per-session AI output.
+/test_*.mjs
+/test_*.js
+!/test-db.js
+
+# ─── Misc generated outputs ───────────────────────────────────────────────────
+service-account.json
+version.txt.bak
+
+# ─── InsForge & AI agent skills ───────────────────────────────────────────────
 .insforge
 .agent
 .agents

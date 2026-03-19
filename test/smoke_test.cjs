@@ -15,11 +15,22 @@
 const puppeteer = require('puppeteer-core');
 const https = require('https');
 const fs = require('fs');
+const path = require('path');
 
-const PROD_URL     = 'https://lock-recon.web.app';
-const EXPECTED_VERSION = '2.1.5';
-const CHROME_PATH  = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const SS_DIR       = 'C:\\Users\\Cezary\\.gemini\\antigravity\\brain\\e7fd0cd6-3530-4d44-91c7-d44fab83675a';
+const PROD_URL    = 'https://lock-recon.web.app';
+const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+
+// Read version dynamically from version.txt — never hardcode it
+const VERSION_FILE = path.join(__dirname, '..', 'version.txt');
+const EXPECTED_VERSION = fs.readFileSync(VERSION_FILE, 'utf8').trim();
+
+// Screenshots go to C:\tmp (always exists)
+const SS_DIR = 'C:\\tmp\\smoke_test_screenshots';
+if (!fs.existsSync(SS_DIR)) fs.mkdirSync(SS_DIR, { recursive: true });
+
+// Mode: --functional = skip version check (used by pre-commit hook)
+// Default (no flag)   = full test including version check (used post-deploy)
+const FUNCTIONAL_ONLY = process.argv.includes('--functional');
 
 // ── Scenario definitions ─────────────────────────────────────────────────────
 const SCENARIOS = [
@@ -221,14 +232,18 @@ async function main() {
   const consoleErrors = [];
 
   // ── STEP 1: version.txt (cache-busted HTTP check) ─────────────────────────
-  console.log('\n[1] Fetching version.txt (cache-busted)...');
-  const versionCheck = await fetchVersionTxt();
-  if (versionCheck.status === 200 && versionCheck.body === EXPECTED_VERSION) {
-    results.passed.push(`version.txt → "${versionCheck.body}" ✅`);
-    console.log(`  ✅ version.txt = ${versionCheck.body}`);
+  if (FUNCTIONAL_ONLY) {
+    console.log('\n[1] Skipping version check (--functional mode: live is 1 version behind).');
   } else {
-    results.failed.push(`version.txt returned "${versionCheck.body}" (${versionCheck.status}) — expected "${EXPECTED_VERSION}" ❌`);
-    console.log(`  ❌ version.txt = "${versionCheck.body}" (expected "${EXPECTED_VERSION}")`);
+    console.log('\n[1] Fetching version.txt (cache-busted)...');
+    const versionCheck = await fetchVersionTxt();
+    if (versionCheck.status === 200 && versionCheck.body === EXPECTED_VERSION) {
+      results.passed.push(`version.txt → "${versionCheck.body}" ✅`);
+      console.log(`  ✅ version.txt = ${versionCheck.body}`);
+    } else {
+      results.failed.push(`version.txt returned "${versionCheck.body}" (${versionCheck.status}) — expected "${EXPECTED_VERSION}" ❌`);
+      console.log(`  ❌ version.txt = "${versionCheck.body}" (expected "${EXPECTED_VERSION}")`);
+    }
   }
 
   // ── STEP 2: Launch browser ────────────────────────────────────────────────
@@ -265,17 +280,21 @@ async function main() {
     await page.goto(PROD_URL, { waitUntil: 'networkidle2', timeout: 30000 });
     await new Promise(r => setTimeout(r, 1500)); // let i18n + JS settle
 
-    // Check footer version
-    const footerVersion = await page.evaluate(() => {
-      return document.querySelector('.footer-version')?.textContent?.trim() ?? null;
-    });
-    const footerOk = footerVersion && footerVersion.includes(EXPECTED_VERSION);
-    if (footerOk) {
-      results.passed.push(`Footer shows "v${EXPECTED_VERSION}" ✅`);
-      console.log(`  ✅ Footer: "${footerVersion}"`);
+    // Check footer version (only in full mode)
+    if (!FUNCTIONAL_ONLY) {
+      const footerVersion = await page.evaluate(() => {
+        return document.querySelector('.footer-version')?.textContent?.trim() ?? null;
+      });
+      const footerOk = footerVersion && footerVersion.includes(EXPECTED_VERSION);
+      if (footerOk) {
+        results.passed.push(`Footer shows "v${EXPECTED_VERSION}" ✅`);
+        console.log(`  ✅ Footer: "${footerVersion}"`);
+      } else {
+        results.failed.push(`Footer shows "${footerVersion}" — expected v${EXPECTED_VERSION} ❌`);
+        console.log(`  ❌ Footer: "${footerVersion}"`);
+      }
     } else {
-      results.failed.push(`Footer shows "${footerVersion}" — expected v${EXPECTED_VERSION} ❌`);
-      console.log(`  ❌ Footer: "${footerVersion}"`);
+      console.log('  [--functional] Skipping footer version check.');
     }
 
     // ── STEP 4–7: Run all 4 scenarios ────────────────────────────────────────

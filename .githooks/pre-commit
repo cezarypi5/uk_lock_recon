@@ -1,12 +1,12 @@
 #!/bin/sh
-# ─── Lock-Recon Pre-Commit Guard v2 ──────────────────────────────────────────
-# MANDATORY on every commit — no exceptions, no chore: bypasses.
-# Configured via: git config core.hooksPath .githooks
+# ─── Lock-Recon Pre-Commit Guard v3 ──────────────────────────────────────────
+# MANDATORY on every commit. Runs automated smoke test. No human bypass.
+# Configured via: git config core.hooksPath .githooks  (already set)
 # ─────────────────────────────────────────────────────────────────────────────
 
 echo ""
 echo "========================================"
-echo "  Lock-Recon Pre-Commit Guard v2"
+echo "  Lock-Recon Pre-Commit Guard v3"
 echo "========================================"
 
 FAIL=0
@@ -24,7 +24,7 @@ if [ "$VERSION_CHANGED" -eq 0 ]; then
     echo "    1. Increment version in version.txt       (patch = x.y.N+1)"
     echo "    2. Increment version in public/version.txt"
     echo "    3. Update <meta name=\"version\"> in public/index.html"
-    echo "    4. Then re-stage and commit."
+    echo "    4. Re-stage all three files and commit."
     echo ""
     FAIL=1
 fi
@@ -58,26 +58,47 @@ for f in $ADDED_OR_MODIFIED; do
     esac
 done
 
-# ── RULE 4: Smoke test reminder (cannot automate, but make it visible) ────────
-echo ""
-echo "  [CHECKLIST] Before this commit is valid, confirm:"
-echo "    [ ] Smoke test run against live site (test/smoke_test.cjs)"
-echo "    [ ] live site version.txt matches new version"
-echo "    [ ] No console errors on lock-recon.web.app"
-echo ""
-
-# ── RULE 5: Warn about untracked files ───────────────────────────────────────
+# ── RULE 4: Warn about untracked files ───────────────────────────────────────
 UNTRACKED=$(git ls-files --others --exclude-standard | grep -vE '^\.|node_modules')
 if [ -n "$UNTRACKED" ]; then
-    echo "  [WARNING] Untracked files (review — should these be committed or gitignored?):"
+    echo "  [WARNING] Untracked files (should these be committed or gitignored?):"
     echo "$UNTRACKED" | while read -r uf; do echo "    - $uf"; done
     echo ""
 fi
 
-if [ "$FAIL" -eq 0 ]; then
-    echo "  [PASSED] All guards passed. Committing..."
+# ── RULE 5: Block before structural errors are confirmed ─────────────────────
+# Exit early if rules 1-4 failed — don't waste time running the smoke test
+if [ "$FAIL" -ne 0 ]; then
+    echo ""
+    echo "  [BLOCKED] Fix the above issues first, then re-commit."
+    echo "========================================"
+    exit 1
 fi
+
+# ── RULE 6: AUTOMATED SMOKE TEST (mandatory — not a checklist prompt) ─────────
+echo ""
+echo "  [SMOKE TEST] Running functional smoke test against live site..."
+echo "  (Tests app health: cards load, filters work, no JS errors.)"
+echo "  (Version check is skipped here — live is 1 version behind by design.)"
+echo "  (Version check runs automatically after deployment via post-deploy step.)"
+echo ""
+
+node test/smoke_test.cjs --functional
+SMOKE_EXIT=$?
+
+if [ "$SMOKE_EXIT" -ne 0 ]; then
+    echo ""
+    echo "  [BLOCKED] Smoke test FAILED. Commit aborted."
+    echo ""
+    echo "  The smoke test must pass with zero critical errors before committing."
+    echo "  Fix the failures above, then re-run:  node test/smoke_test.cjs"
+    echo "========================================"
+    exit 1
+fi
+
+echo ""
+echo "  [PASSED] All guards passed. Committing..."
 echo "========================================"
 echo ""
 
-exit $FAIL
+exit 0

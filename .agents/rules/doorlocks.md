@@ -2,6 +2,38 @@
 trigger: always_on
 ---
 
+## ⚠️ MANDATORY COMMIT PROTOCOL — NO EXCEPTIONS
+
+These rules override any AI reasoning about whether a commit is "just a chore" or "only infra". There are no self-exempt commit types.
+
+### Before EVERY git commit you MUST:
+
+1. **Bump the version** in ALL THREE locations simultaneously:
+   - `version.txt`
+   - `public/version.txt`
+   - `public/index.html` → `<meta name="version" content="...">`
+   - Rule: patch +1 for any change. No version bump = commit is INVALID.
+
+2. **Run the smoke test** before staging:
+   ```
+   node test/smoke_test.cjs
+   ```
+   Must pass zero errors. Do not commit if it fails.
+
+3. **Stage and commit** — the pre-commit hook will enforce rule 1 automatically.
+
+4. **After push, verify the live version**:
+   ```
+   Invoke-WebRequest https://lock-recon.web.app/version.txt | Select-Object -ExpandProperty Content
+   ```
+   Must return the new version. If it returns the old version, the deploy failed.
+
+### If you are tempted to skip any of these steps:
+
+Stop. Ask the user first. Never self-exempt. The cost of a wrong skip is a silent broken build or an audit trail gap. The cost of always bumping is zero.
+
+---
+
 Please note that the information regarding software testing, web browser console logging, and autonomous code-fixing by an AI is not from the provided sources, which focus strictly on high-security door locks. I have incorporated these specific rules based entirely on your instructions. 
 
 Here is the fully updated Markdown prompt with the new recursive testing and console logging requirements added to Section 6:

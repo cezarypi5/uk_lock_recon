@@ -2,9 +2,9 @@ import { db, collection, getDocs, getDoc, doc, query, orderBy, limit } from './f
 import { setLang, currentLang, applyTranslations, updateLangSwitcher, t } from './i18n.js';
 
 /**
- * script.js — UK Super Agent Lock Finder v2.0.0
- * 7-dimensional filtering: Security Tier, Budget, Environment, Door Type,
- * Anti-Attack Features, Cylinder Size, Cylinder Type.
+ * script.js — UK Super Agent Lock Finder v2.2.1
+ * 6-dimensional filtering: Security Tier, Budget, Environment, Door Type,
+ * Cylinder Size, Cylinder Type.
  * Bilingual: English / Polish via i18n.js
  */
 
@@ -171,7 +171,7 @@ function getConfig() {
         budget: document.querySelector('input[name="budget"]:checked')?.value ?? 'any',
         environment: document.querySelector('input[name="environment"]:checked')?.value ?? 'any',
         doorType: document.querySelector('input[name="door-type"]:checked')?.value ?? 'any',
-        attackReqs: [...document.querySelectorAll('input[name="attack"]:checked')].map(el => el.value),
+        attackReqs: [],
         cylinderType: document.querySelector('input[name="cylinder-type"]:checked')?.value ?? 'any',
         // Size: if advanced panel is open, use split; otherwise use total length
         useAdvanced,
@@ -226,13 +226,7 @@ function filterLocks(locks, cfg) {
             if (compat.length > 0 && !compat.includes(cfg.doorType)) return false;
         }
 
-        // 5. Anti-Attack (AND logic — must have ALL selected)
-        if (cfg.attackReqs.length > 0) {
-            const lockAttacks = lock.anti_attack || [];
-            if (!cfg.attackReqs.every(req => lockAttacks.includes(req))) return false;
-        }
-
-        // 6. Cylinder Type
+        // 5. Cylinder Type
         if (cfg.cylinderType !== 'any') {
             const t = (lock.cylinder_type ?? '').toLowerCase();
             if (cfg.cylinderType === 'thumbturn' && !t.includes('thumbturn') && !t.includes('thumb')) return false;
@@ -271,7 +265,6 @@ function resetFilters() {
     document.querySelectorAll('input[name="environment"]').forEach((r, i) => r.checked = i === 0);
     document.querySelectorAll('input[name="door-type"]').forEach((r, i) => r.checked = i === 0);
     document.querySelectorAll('input[name="cylinder-type"]').forEach((r, i) => r.checked = i === 0);
-    document.querySelectorAll('input[name="attack"]').forEach(cb => cb.checked = false);
     if (keywordSearch) keywordSearch.value = '';
     // Reset total length
     if (sizeTotal) { sizeTotal.value = 70; updateSplitPreview(70); }
@@ -453,7 +446,6 @@ function buildActiveFiltersLabel(cfg) {
     if (cfg.budget !== 'any') parts.push({ under40: '<£40', '40-70': '£40-70', '70-100': '£71-100', '100plus': '£100+' }[cfg.budget] || cfg.budget);
     if (cfg.environment !== 'any') parts.push(cfg.environment);
     if (cfg.doorType !== 'any') parts.push(cfg.doorType.toUpperCase());
-    if (cfg.attackReqs.length > 0) parts.push(cfg.attackReqs.join('+'));
     if (cfg.cylinderType !== 'any') parts.push(TYPE_LABELS[cfg.cylinderType]);
     return parts.join(' · ');
 }

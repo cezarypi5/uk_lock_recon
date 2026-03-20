@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="version" content="2.2.0" />
+  <meta name="version" content="2.2.1" />
   <meta name="description"
     content="UK High-Security Door Lock Intelligence Dashboard — TS007 3-Star, SS312 Diamond, BS3621 compliant lock finder with advanced filtering." />
 
@@ -34,7 +34,7 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Orbitron:wght@700;900&display=swap"
     rel="stylesheet" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=2.2.0" />
+  <link rel="stylesheet" href="styles.css?v=2.2.1" />
 </head>
 
 <body>
@@ -225,55 +225,7 @@
           </div>
         </div>
 
-        <!-- ── 5. Anti-Attack Features ───────────────────────── -->
-        <div class="param-group param-full">
-          <div class="param-label" data-i18n="attackLabel">⚔ REQUIRED ATTACK PROTECTION</div>
-          <p class="param-hint" data-i18n="attackHint">Select features the lock MUST have (AND logic — all selected must be present).</p>
-          <div class="attack-options" role="group" aria-label="Anti-attack features">
-            <label class="attack-toggle">
-              <input type="checkbox" name="attack" value="anti-snap" />
-              <span class="attack-card">
-                <span class="attack-icon">✂</span>
-                <span class="attack-name" data-i18n="attackSnapName">ANTI-SNAP</span>
-                <span class="attack-desc" data-i18n="attackSnapDesc">Resist cylinder snap attacks</span>
-              </span>
-            </label>
-            <label class="attack-toggle">
-              <input type="checkbox" name="attack" value="anti-bump" />
-              <span class="attack-card">
-                <span class="attack-icon">🔨</span>
-                <span class="attack-name" data-i18n="attackBumpName">ANTI-BUMP</span>
-                <span class="attack-desc" data-i18n="attackBumpDesc">Resist bump key attacks</span>
-              </span>
-            </label>
-            <label class="attack-toggle">
-              <input type="checkbox" name="attack" value="anti-drill" />
-              <span class="attack-card">
-                <span class="attack-icon">🔧</span>
-                <span class="attack-name" data-i18n="attackDrillName">ANTI-DRILL</span>
-                <span class="attack-desc" data-i18n="attackDrillDesc">Hardened drill-resistant core</span>
-              </span>
-            </label>
-            <label class="attack-toggle">
-              <input type="checkbox" name="attack" value="anti-pick" />
-              <span class="attack-card">
-                <span class="attack-icon">🗝</span>
-                <span class="attack-name" data-i18n="attackPickName">ANTI-PICK</span>
-                <span class="attack-desc" data-i18n="attackPickDesc">High-security pin configuration</span>
-              </span>
-            </label>
-            <label class="attack-toggle">
-              <input type="checkbox" name="attack" value="anti-extract" />
-              <span class="attack-card">
-                <span class="attack-icon">🔒</span>
-                <span class="attack-name" data-i18n="attackExtractName">ANTI-EXTRACT</span>
-                <span class="attack-desc" data-i18n="attackExtractDesc">Key cannot be forcibly removed</span>
-              </span>
-            </label>
-          </div>
-        </div>
-
-        <!-- ── 6. Cylinder Size & Type ───────────────────────── -->
+        <!-- ── 5. Cylinder Size & Type ───────────────────────── -->
         <div class="param-group">
           <div class="param-label" data-i18n="cylinderSizeLabel">📏 CYLINDER SIZE (mm)</div>
           <p class="param-hint" data-i18n-html="true" data-i18n="cylinderSizeHint">Enter total cylinder length — the end-to-end measurement of the barrel. Most standard UPVC doors need <strong>70mm</strong>.</p>
@@ -428,7 +380,6 @@
       <ul class="splash-specs">
         <li data-i18n="splashTier">⬡ Security Tier — Basic → Top Notch</li>
         <li data-i18n="splashBudget">⬡ Budget Range — Under £40 to £100+</li>
-        <li data-i18n="splashAttack">⬡ Anti-Attack — Snap / Bump / Drill / Pick / Extract</li>
         <li data-i18n="splashEnv">⬡ Environment — External / Internal</li>
         <li data-i18n="splashDoor">⬡ Door Material — UPVC / Composite / Timber / Aluminium</li>
         <li data-i18n="splashCylinder">⬡ Cylinder — Size (mm) + Type</li>
@@ -514,19 +465,19 @@
       <span class="footer-label" data-i18n="footerSbd">SECURED BY DESIGN</span>
       <span class="footer-count" id="footer-compliant-count" data-i18n="footerAwait">— AWAITING DATA —</span>
     </div>
-    <span class="footer-version">UK SUPER AGENT LOCK FINDER v2.2.0 // CYBERCORE</span>
+    <span class="footer-version">UK SUPER AGENT LOCK FINDER v2.2.1 // CYBERCORE</span>
   </footer>
 
   <!-- Firebase Integration -->
   <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore-compat.js"></script>
-  <script src="firebaseConfig.js?v=2.2.0"></script>
+  <script src="firebaseConfig.js?v=2.2.1"></script>
 
   <!-- i18n module — must load before script.js -->
-  <script type="module" src="i18n.js?v=2.2.0"></script>
+  <script type="module" src="i18n.js?v=2.2.1"></script>
 
   <!-- UI App Logic -->
-  <script type="module" src="script.js?v=2.2.0"></script>
+  <script type="module" src="script.js?v=2.2.1"></script>
 
   <!-- Toast Notifications Container -->
   <div id="toast-container" class="toast-container"></div>
